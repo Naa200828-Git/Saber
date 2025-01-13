@@ -1,36 +1,62 @@
 #define __NO_SUGAR__ 0 
 
 
-inline unsigned char GetEachTiltObj()
+inline unsigned char** GetEachTiltObj()
 {
+
+    unsigned char Data[2][]; // Holds Logged Types & 
     // if moved, check every
     // Logged Positions, and Movement substraction to see if left screen, if so, do not re enter obj
     // Have A pointer(mouse) in Buffer Tracker To Put In objs
-    // If Onj count > 30
+    // If uniqueObj count > 4
+    // then deltet extra created data if drops below 4 and is far away from where player pos was logged
 
-    // Log Types Only
+    // Log Types, 0
+    // Amount of Each Type, 1
+
+    return Data[2];
 }
 inline unsigned char GetTiltObjAmount()
 {
 
 }
-// this shi so abstract
-inline void GetEachTilt(const int Amount, const void* Objects, const void* Positions) // Could Seperate Into Recalc X&Y Individually
+
+inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
 {   
 #if __NO_SUGAR__
 #else
     #define Sprite *(void**)((char*)Objects + (i * 12))                        // Start of the 12-byte structure, pointing to the `Sprites` pointer at offset 0
     #define OffsetPerLayer *((unsigned char*)((char*)Objects + (i * 12) + 8))  // Offset 8: `OffsetPerLayer` (after 8 bytes for `Sprites`)
-    #define LayersAmount *((unsigned char*)((char*)Objects + (i * 12) + 9))    // Offset 9: `AmountOfLayers` (after 1 byte for `OffsetPerLayer`)
-    #define ParticalsAmount  // Describes The Amount Of bytes * 2, (X&Y Pos allocated)
+    #define LayersAmount *((unsigned char*)((char*)Objects + (j * 12) + 9))    // Offset 9: `AmountOfLayers` (after 1 byte for `OffsetPerLayer`)
+    #define BaseX *(unsigned char*)((char*)(Positions + LoggedIterator + i));
+    #define BaseY *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2));
 
-    // 2d array of each object
-    for (unsigned char p = 0; p < ParticalsAmount; p++) // Amount Of Particals To Calc OffSet
+
+    // 4 A, 6 B, 1 C;; Amount of each object
+    // a a a a | b b b b b b | c ;; iterating in positions 
+    //      
+
+    // By: By Each Object
+        // By: Each Layer
+            // By Each Position
+
+    LoggedPos++;
+    // BaseX = *(unsigned char*)((char*)(Positions + LoggedIterator + i));
+    // BaseY = *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2));
+
+    unsigned char LoggedPos = 0, LoggedIterator = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
+    for (unsigned char j = 0; j < UniqueObjAmount; j++) 
     {
-        
+        for(unsigned char l = 0; l < LayersAmount; l++)
+            for (unsigned char i = 0; i < EachObjAmount[j]; i++)    // Iterate over each position per object
+            {
+                // Display Sprite at 
+                // Is this it, try diff ways to macro optimize ?
+                BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
+                BaseY + ((BaseY - CameraY) * ((l + 1) * OffsetPerLayer));
+            }
+        LoggedIterator += LoggedPos;
     }
-
-    return
 
     #undef Sprite
     #undef OffsetPerLayer
@@ -39,8 +65,8 @@ inline void GetEachTilt(const int Amount, const void* Objects, const void* Posit
 #endif
 }
 
-int main() // Call When Player moved 
-{
+int main() // Call When Player moved;; Recalculate When Moved
+{          // Make Sure to Free Mem
 
 // ~~~~ Should Be sperated Later
     struct LTSprite
@@ -54,14 +80,13 @@ int main() // Call When Player moved
 // ~~~~
 
     // ** Stop initing Each Time ??
-    unsigned char UniqueObjAmount = GetEachTiltObj(),
-        ObjAmount = GetTiltObjAmount();
+    const ObjGenData[2] = GetEachTiltObj(),
+    unsigned char ObjAmount = GetTiltObjAmount(),
+        EachObjAmount[UniqueObjAmount]; 
     unsigned char* ObjPositions = new unsigned char[ObjAmount];
-    // Do You Need Complicated arr & Vector, or is better to have a Total amount of Positions, and a for loop that acsess at:
-    // [j] // j is goes from 0 - UniqueObjAmount; in an array of Unique Objects;, so its like this: a a a a a | b b b b | c c | d ...
-    // It will know By the amount of each obj to then go to the next index for j, so auto acounts for sprite displaying
+    
     if (UniqueObjAmount)
     {        
-        GetEachTilt(UniqueObjAmount, UniqueObjBuffer, ObjPositions);
+        GetEachTilt(UniqueObjAmount, UniqueObjBuffer, ObjPositions, EachObjAmount);
     } 
 }
