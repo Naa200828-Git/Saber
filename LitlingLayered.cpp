@@ -1,44 +1,67 @@
 #define __NO_SUGAR__ 0 
 
 
-inline void GetEachTilt(const int Amount, const void* Objects, const void* Positions)
-{   
+inline unsigned char GetEachTiltObj()
+{
+    // if moved, check every
+    // Logged Positions, and Movement substraction to see if left screen, if so, do not re enter obj
+    // Have A pointer(mouse) in Buffer Tracker To Put In objs
+    // If Onj count > 30
 
+    // Log Types Only
+}
+inline unsigned char GetTiltObjAmount()
+{
+
+}
+// this shi so abstract
+inline void GetEachTilt(const int Amount, const void* Objects, const void* Positions) // Could Seperate Into Recalc X&Y Individually
+{   
 #if __NO_SUGAR__
 #else
-    #define Sprite *(void**)(Objects + i)                     
-    #define BasePosX *(unsigned int*)((char*)Objects + (i * 20) + 8) 
-    #define BasePosY *(unsigned int*)((char*)Objects + (i * 20) + 12)
-    #define OffsetPerLayer *((unsigned char*)((char*)Objects + (i * 20) + 16))
-    #define LayersAmount *((unsigned char*)((char*)Objects + (i * 20) + 17))
-    #define ParticalsAmount *(*(unsigned char**)((char*)Positions + i * sizeof(unsigned char*)))
-    
-    for (unsigned char i = 0; i < Amount; i++)                  // Amount Of Objects
-        for (unsigned char j = 0; j < LayersAmount; j++)        // Amount Of Layers
-            for (unsigned char l = 0; l < ParticalsAmount; l++) // Amount Of Particals To Calc OffSet
+    #define Sprite *(void**)((char*)Objects + (i * 12))                        // Start of the 12-byte structure, pointing to the `Sprites` pointer at offset 0
+    #define OffsetPerLayer *((unsigned char*)((char*)Objects + (i * 12) + 8))  // Offset 8: `OffsetPerLayer` (after 8 bytes for `Sprites`)
+    #define LayersAmount *((unsigned char*)((char*)Objects + (i * 12) + 9))    // Offset 9: `AmountOfLayers` (after 1 byte for `OffsetPerLayer`)
+    #define ParticalsAmount  // Describes The Amount Of bytes * 2, (X&Y Pos allocated)
 
+    // 2d array of each object
+    for (unsigned char p = 0; p < ParticalsAmount; p++) // Amount Of Particals To Calc OffSet
+    {
+        
+    }
+
+    return
 
     #undef Sprite
-    #undef BasePosX
-    #undef BasePosY
     #undef OffsetPerLayer
     #undef LayersAmount 
-    #undef ParticalsAmount 
+    #undef ParticalsAmount
 #endif
 }
 
-int main()
+int main() // Call When Player moved 
 {
+
+// ~~~~ Should Be sperated Later
     struct LTSprite
     {   
-        void* Sprites = nullptr;                
-        alignas(4) unsigned int BasePosX, BasePosY; 
-        unsigned char OffsetPerLayer, AmountOfLayers;           
-        // 2-byte Padding
-    };  // 20 Bytes Total
+        void* Sprites = nullptr;                 
+        unsigned char OffsetPerLayer,            
+            AmountOfLayers;                      
+        // 2-byte padding
+    };  // Total, 20 bytes
+    const LTSprite* UniqueObjBuffer = new LTSprite[4];
+// ~~~~
 
-    int UniqueObjAmount;
-    LTSprite* UniqueObj = new LTSprite[UniqueObjAmount];
-    unsigned char** ObjBasePositions = new unsigned char*[UniqueObjAmount]; // First Byte After Tells You Amount Of Base Positions
-    GetEachTilt(UniqueObjAmount, UniqueObj, ObjBasePositions);
+    // ** Stop initing Each Time ??
+    unsigned char UniqueObjAmount = GetEachTiltObj(),
+        ObjAmount = GetTiltObjAmount();
+    unsigned char* ObjPositions = new unsigned char[ObjAmount];
+    // Do You Need Complicated arr & Vector, or is better to have a Total amount of Positions, and a for loop that acsess at:
+    // [j] // j is goes from 0 - UniqueObjAmount; in an array of Unique Objects;, so its like this: a a a a a | b b b b | c c | d ...
+    // It will know By the amount of each obj to then go to the next index for j, so auto acounts for sprite displaying
+    if (UniqueObjAmount)
+    {        
+        GetEachTilt(UniqueObjAmount, UniqueObjBuffer, ObjPositions);
+    } 
 }
