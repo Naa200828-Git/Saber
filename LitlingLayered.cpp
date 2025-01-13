@@ -1,6 +1,6 @@
 #define __NO_SUGAR__ 0 
 
-
+// Camera centered adjusted by 3/4 tilt angle and lengthen screen, or just have a centerd pos used for rendering Tilted Spirtes    
 inline unsigned char** GetEachTiltObj()
 {
 
@@ -23,8 +23,8 @@ inline unsigned char GetTiltObjAmount()
 
 //
 // Is this all the ipsplacment logic, play with the tilt ratio
-inline void GetEachTilt(const int UniqueObjAmount, const void*& Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
-{   
+inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
+{ 
 #if __NO_SUGAR__
     unsigned char LoggedPos = 0, LoggedIterator = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
     for (unsigned char j = 0; j < UniqueObjAmount; j++) 
@@ -42,34 +42,22 @@ inline void GetEachTilt(const int UniqueObjAmount, const void*& Objects, const v
         LoggedIterator += LoggedPos; // is best spot for logging iterator
     }
 #else
-    #define Sprite *(void**)((char*)Objects + (i * 12))                        // Start of the 12-byte structure, pointing to the `Sprites` pointer at offset 0
+    #define Sprite *(void***)(((char*)Objects + (i * 12) + (l * 8)))                        // Start of the 12-byte structure, pointing to the `Sprites` pointer at offset 0
     #define OffsetPerLayer *((unsigned char*)((char*)Objects + (i * 12) + 8))  // Offset 8: `OffsetPerLayer` (after 8 bytes for `Sprites`)
     #define LayersAmount *((unsigned char*)((char*)Objects + (j * 12) + 9))    // Offset 9: `AmountOfLayers` (after 1 byte for `OffsetPerLayer`)
     #define BaseX *(unsigned char*)((char*)(Positions + LoggedIterator + i))
     #define BaseY *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2))
 
-
-    // 4 A, 6 B, 1 C;; Amount of each object
-    // a a a a | b b b b b b | c ;; iterating in positions 
-    //      
-
-    // By: By Each Object
-        // By: Each Layer
-            // By Each Position
-
-    // BaseX = *(unsigned char*)((char*)(Positions + LoggedIterator + i));
-    // BaseY = *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2));
-
     unsigned char LoggedPos = 0, LoggedIterator = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
-    for (unsigned char j = 0; j < UniqueObjAmount; j++) 
+    for (unsigned char j = 0; j < UniqueObjAmount; j++) // for each type of object, it will work for each layer of that object, then read the stored base positions and then layer by layer calculate the ofset of the layered spite and render it there each frame
     {
         for(unsigned char l = 0; l < LayersAmount; l++)
             for (unsigned char i = 0; i < EachObjAmount[j]; i++)    // Iterate over each position per object
             {
                 // Display Sprite at 
-                // Is this it, try diff ways to macro optimize ?
                 BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
                 BaseY + ((BaseY - CameraY) * ((l + 1) * OffsetPerLayer));
+                // Maybe Need remember system so if not moving knows waht to render, of if just leave unchanged render instructions
             }
         LoggedIterator += LoggedPos; // beacuse we navigate position memory unordered by types
     }
@@ -88,22 +76,19 @@ int main() // Call When Player moved;; Recalculate When Moved
 // ~~~~ Should Be sperated Later
     struct LTSprite
     {   
-        void* Sprites = nullptr;                 
+        void** Sprites = nullptr;                
         unsigned char OffsetPerLayer,            
             AmountOfLayers;                      
         // 2-byte padding
     };  // Total, 20 bytes
-    const LTSprite* UniqueObjBuffer = new LTSprite[4];
+    const LTSprite* UniqueObjBuffer = new LTSprite[6];
 // ~~~~
 
     // ** Stop initing Each Time ??
-    const ObjGenData[2] = GetEachTiltObj(),
-    unsigned char ObjAmount = GetTiltObjAmount(),
+    const unsigned char ObjGenData[2] = GetEachTiltObj(),
+        ObjAmount = GetTiltObjAmount(),
         EachObjAmount[UniqueObjAmount]; 
     unsigned char* ObjPositions = new unsigned char[ObjAmount];
     
-    if (UniqueObjAmount)
-    {        
-        GetEachTilt(UniqueObjAmount, UniqueObjBuffer, ObjPositions, EachObjAmount);
-    } 
+    if (UniqueObjAmount) GetEachTilt(UniqueObjAmount, UniqueObjBuffer, ObjPositions, EachObjAmount);
 }
