@@ -21,15 +21,32 @@ inline unsigned char GetTiltObjAmount()
 
 }
 
-inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
+//
+// Is this all the ipsplacment logic, play with the tilt ratio
+inline void GetEachTilt(const int UniqueObjAmount, const void*& Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
 {   
 #if __NO_SUGAR__
+    unsigned char LoggedPos = 0, LoggedIterator = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
+    for (unsigned char j = 0; j < UniqueObjAmount; j++) 
+    {
+        for(unsigned char l = 0; l < *((unsigned char*)((char*)Objects + (j * 12) + 9)); l++)
+            for (unsigned char i = 0; i < EachObjAmount[j]; i++)    // Iterate over each position per object
+            {
+                *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) 
+                    + ((*(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) - CameraX) * ((l + 1) 
+                        * (*((unsigned char*)((char*)Objects + (i * 12) + 8)))));
+                *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) 
+                    + ((*(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) - CameraY) * ((l + 1) 
+                        * (*((unsigned char*)((char*)Objects + (i * 12) + 8)))));
+            }
+        LoggedIterator += LoggedPos; // is best spot for logging iterator
+    }
 #else
     #define Sprite *(void**)((char*)Objects + (i * 12))                        // Start of the 12-byte structure, pointing to the `Sprites` pointer at offset 0
     #define OffsetPerLayer *((unsigned char*)((char*)Objects + (i * 12) + 8))  // Offset 8: `OffsetPerLayer` (after 8 bytes for `Sprites`)
     #define LayersAmount *((unsigned char*)((char*)Objects + (j * 12) + 9))    // Offset 9: `AmountOfLayers` (after 1 byte for `OffsetPerLayer`)
-    #define BaseX *(unsigned char*)((char*)(Positions + LoggedIterator + i));
-    #define BaseY *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2));
+    #define BaseX *(unsigned char*)((char*)(Positions + LoggedIterator + i))
+    #define BaseY *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2))
 
 
     // 4 A, 6 B, 1 C;; Amount of each object
@@ -40,7 +57,6 @@ inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const vo
         // By: Each Layer
             // By Each Position
 
-    LoggedPos++;
     // BaseX = *(unsigned char*)((char*)(Positions + LoggedIterator + i));
     // BaseY = *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2));
 
@@ -55,13 +71,14 @@ inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const vo
                 BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
                 BaseY + ((BaseY - CameraY) * ((l + 1) * OffsetPerLayer));
             }
-        LoggedIterator += LoggedPos;
+        LoggedIterator += LoggedPos; // beacuse we navigate position memory unordered by types
     }
 
     #undef Sprite
     #undef OffsetPerLayer
     #undef LayersAmount 
-    #undef ParticalsAmount
+    #undef BaseX
+    #undef BaseY
 #endif
 }
 
