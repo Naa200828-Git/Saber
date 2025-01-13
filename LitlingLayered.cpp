@@ -1,25 +1,8 @@
 #define __NO_SUGAR__ 0 
 
 // Camera centered adjusted by 3/4 tilt angle and lengthen screen, or just have a centerd pos used for rendering Tilted Spirtes    
-inline unsigned char** GetEachTiltObj()
-{
 
-    unsigned char Data[2][]; // Holds Logged Types & 
-    // if moved, check every
-    // Logged Positions, and Movement substraction to see if left screen, if so, do not re enter obj
-    // Have A pointer(mouse) in Buffer Tracker To Put In objs
-    // If uniqueObj count > 4
-    // then deltet extra created data if drops below 4 and is far away from where player pos was logged
 
-    // Log Types, 0
-    // Amount of Each Type, 1
-
-    return Data[2];
-}
-inline unsigned char GetTiltObjAmount()
-{
-
-}
 
 //
 // Is this all the ipsplacment logic, play with the tilt ratio
@@ -55,8 +38,8 @@ inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const vo
             for (unsigned char i = 0; i < EachObjAmount[j]; i++)    // Iterate over each position per object
             {
                 // Display Sprite at 
-                BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
-                BaseY + ((BaseY - CameraY) * ((l + 1) * OffsetPerLayer));
+                BaseX + ((BaseX - CameraX/* - ration for 3/4 top down*/) * ((l + 1) * OffsetPerLayer));
+                BaseY + ((BaseY - CameraY/* - ration for 3/4 top down*/) * ((l + 1) * OffsetPerLayer));
                 // Maybe Need remember system so if not moving knows waht to render, of if just leave unchanged render instructions
             }
         LoggedIterator += LoggedPos; // beacuse we navigate position memory unordered by types
@@ -82,13 +65,46 @@ int main() // Call When Player moved;; Recalculate When Moved
         // 2-byte padding
     };  // Total, 20 bytes
     const LTSprite* UniqueObjBuffer = new LTSprite[6];
-// ~~~~
+    const void* BaseAdress = GetEachTiltObj(UniqueObjBuffer); // gen in this func then return mem adress int an array??
+    const unsigned char TotalObjectAmount = *(unsigned char*)&BaseAdress;
+    const unsigned char UniqueObjectAmount = *(unsigned char*)&BaseAdress + 8;
 
-    // ** Stop initing Each Time ??
-    const unsigned char ObjGenData[2] = GetEachTiltObj(),
-        ObjAmount = GetTiltObjAmount(),
-        EachObjAmount[UniqueObjAmount]; 
     unsigned char* ObjPositions = new unsigned char[ObjAmount];
+
+
+    GetEachTilt(UniqueObjAmount, UniqueObjBuffer, Positions, EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
+}
+
+struct LTSprite
+{   
+    void** Sprites = nullptr;           
+    unsigned char OffsetPerLayer,       
+        AmountOfLayers;                 
+    // 2-byte padding
+};  // Total, 20 bytes
+
+inline void* GetLTOnScreen(const void* UniqueObjectBuffer)
+{
+    unsigned char TotalObjectAmount;
+    alignas(1) unsigned char UniqueObjectAmount;
     
-    if (UniqueObjAmount) GetEachTilt(UniqueObjAmount, UniqueObjBuffer, ObjPositions, EachObjAmount);
+    return &TotalObjectAmount; 
+}
+
+inline void Once()
+{               
+
+// 
+    const LTSprite* UniqueObjBuffer = new LTSprite[6];
+    const unsigned char* TotalObjectAmount = (unsigned char*)GetLTOnScreen(UniqueObjBuffer),
+        UniqueObjectAmount = *(TotalObjectAmount + 8); // dereference toa get that pointer next to it
+
+    const unsigned char* ObjPositionsBuffer = new unsigned char[15];
+
+    while (InGame)
+    {
+        // ...
+        GetEachTilt();
+        // ...
+    }
 }
