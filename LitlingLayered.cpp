@@ -1,5 +1,5 @@
 #define __NO_SUGAR__ 0 
-#define __OVERFLOW__ 0 
+#define __OVERFLOW__ 1 
 
 
 // Camera centered adjusted by 3/4 tilt angle and lengthen screen, or just have a centerd pos used for rendering Tilted Spirtes    
@@ -47,7 +47,7 @@ inline void RenderLT(const unsigned char UniqueObjAmount, const void* Objects, c
                 LoggedPos++;
                 // Display Sprite at 
                 PosX = BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
-                PosY = BaseY + ((BaseY - CameraY_TopDown) * ((l + 1) * OffsetPerLayer));
+                PosY = BaseY + ((BaseY - CameraY_TopDown) * ((l + 1) * OffsetPerLayer));  
                 // Maybe Need remember system so if not moving knows waht to render, of if just leave unchanged render instructions
             }
         LoggedIterator += LoggedPos; // beacuse we navigate position memory unordered by types
@@ -109,8 +109,8 @@ inline void Once()
 
 #endif
 
-    while (0) // InGame
-    {
+    // while (0) // InGame
+    // {
         // ...
         // ~~~~ If Player Moved
             // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows
@@ -132,5 +132,10 @@ inline void Once()
         // if (ObjPositionsOverflowSize) delete UniqueObjOverflow[ObjPositionsOverflowSize - 1];
         // ...
 #endif
-    }
+    // }
+}
+
+int main ()
+{
+    Once();
 }
