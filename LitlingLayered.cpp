@@ -32,6 +32,10 @@ inline void RenderLT(const unsigned char UniqueObjAmount, const void* Objects, c
     #define BaseX *(unsigned char*)((char*)(Positions + LoggedIterator + i))
     #define BaseY *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2))
 
+    // Temp
+    int PosX, PosY;
+    int CameraX, CameraY_TopDown;
+
     unsigned char LoggedIterator = 0, LoggedPos = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
     for (unsigned char j = 0; j < UniqueObjAmount; j++) // for each type of object, it will work for each layer of that object, then read the stored base positions and then layer by layer calculate the ofset of the layered spite and render it there each frame
     {
@@ -40,8 +44,8 @@ inline void RenderLT(const unsigned char UniqueObjAmount, const void* Objects, c
             {
                 LoggedPos++;
                 // Display Sprite at 
-                BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
-                BaseY + ((BaseY - CameraY_TopDown) * ((l + 1) * OffsetPerLayer));
+                PosX = BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
+                PosY = BaseY + ((BaseY - CameraY_TopDown) * ((l + 1) * OffsetPerLayer));
                 // Maybe Need remember system so if not moving knows waht to render, of if just leave unchanged render instructions
             }
         LoggedIterator += LoggedPos; // beacuse we navigate position memory unordered by types
@@ -76,28 +80,42 @@ inline short int GetLTOnScreen(const void* UniqueObjectBuffer)
 inline void Once()
 {               
     // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows, Set Up Data
-    const LTSprite UniqueObjBuffer[6]; 
-    const unsigned char ObjPositionsBuffer[15]
+    constexpr const unsigned char UniqueObjBufferSize = 6,
+        ObjPositionsBufferSize = 15;
 
-    bool NeedObjPositionsOverflow = ? TotalObjAmount > 15 : 1,  // else 0
-        alignas(1) NeedUniqueObjOverflow = ? UniqueObjAmount > 15 : 1;
+    LTSprite UniqueObjBuffer[UniqueObjBufferSize]; 
+    unsigned char ObjPositionsBuffer[ObjPositionsBufferSize];
 
-    alignas(1) unsigned char Temp = GetLTOnScreen(UniqueObjBuffer),
-        alignas(1) TotalObjAmount = Temp >> 8, 
-        alignas(1) UniqueObjAmount = Temp << 8; 
+    #define a8uc_t alignas(1) unsigned char 
+    a8uc_t Temp = GetLTOnScreen(UniqueObjBuffer);
+    a8uc_t TotalObjAmount[Temp[1]] = Temp >> 8; 
+    a8uc_t UniqueObjAmount = Temp << 8; 
 
-    if (NeedObjPositionsOverflow)
-        alignas(1) unsigned char* ObjPositionsOverflow = new unsigned char[(TotalObjAmount - 15) * 2];
-    if (NeedUniqueObjOverflow > 6)
-        alignas(1) LTSprite* UniqueObjOverflow = new LTSprite[(TotalObjAmount - 6)];
+    a8uc_t ObjPositionsOverflowSize = (TotalObjAmount > UniqueObjBufferSize) ? (TotalObjAmount - UniqueObjBufferSize) : 0;  // else 0
+    a8uc_t UniqueObjOverflowSize = (UniqueObjAmount > ObjPositionsBufferSize) ? (UniqueObjAmount - ObjPositionsBufferSize) : 0;
+
+
+    if (ObjPositionsOverflowSize) a8uc_t* ObjPositionsOverflow = new unsigned char[ObjPositionsOverflowSize * 2];
+    if (UniqueObjOverflowSize) alignas(1) LTSprite* UniqueObjOverflow = new LTSprite[UniqueObjOverflowSize];
+    #undef a8uc_t
+
     while (0) // InGame
     {
         // ...
         // ~~~~ If Player Moved
             // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows
-        if (NeedObjPositionsOverflow && NeedUniqueObjOverflow)
-            RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount, ObjPositionsOverflow ,UniqueObjOverflow);
-        else if ()
+        if (!ObjPositionsOverflowSize && !UniqueObjOverflowSize) 
+            RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount);
+        /*else if (ObjPositionsOverflowSize) 
+            unsigned char* ObjPositionsOverflow = new unsigned char[(TotalObjAmount - UniqueObjBufferSize) * 2];
+        else if (UniqueObjOverflowSize) 
+            RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount, UniqueObjOverflowSize, UniqueObjOverflow);
+        else if (ObjPositionsOverflowSize && UniqueObjOverflowSize) 
+            RenderLT(UniqueObjAmount , UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount, ObjPositionsOverflow , ObjPositionsOverflowSize, UniqueObjOverflow, UniqueObjOverflowSize, UniqueObjOverflow);
+        */
+        // If Moved Far enough away
+        if (UniqueObjOverflowSize) delete UniqueObjOverflow[UniqueObjOverflowSize];
+        if (ObjPositionsOverflowSize) delete UniqueObjOverflow[ObjPositionsOverflowSize];
         // ...
     }
 }
