@@ -4,9 +4,9 @@
 
 
 
-//
+// Now Need To Learn Vulkan
 // Is this all the ipsplacment logic, play with the tilt ratio
-inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
+inline void GetEachTilt(const unsigned char UniqueObjAmount, const void* Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
 { 
 #if __NO_SUGAR__
     unsigned char LoggedPos = 0, LoggedIterator = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
@@ -19,7 +19,7 @@ inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const vo
                     + ((*(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) - CameraX) * ((l + 1) 
                         * (*((unsigned char*)((char*)Objects + (i * 12) + 8)))));
                 *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) 
-                    + ((*(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) - CameraY) * ((l + 1) 
+                    + ((*(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) - CameraY_TopDown) * ((l + 1) 
                         * (*((unsigned char*)((char*)Objects + (i * 12) + 8)))));
             }
         LoggedIterator += LoggedPos; // is best spot for logging iterator
@@ -38,8 +38,8 @@ inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const vo
             for (unsigned char i = 0; i < EachObjAmount[j]; i++)    // Iterate over each position per object
             {
                 // Display Sprite at 
-                BaseX + ((BaseX - CameraX/* - ration for 3/4 top down*/) * ((l + 1) * OffsetPerLayer));
-                BaseY + ((BaseY - CameraY/* - ration for 3/4 top down*/) * ((l + 1) * OffsetPerLayer));
+                unsigned char pos = BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
+                unsigned char posx = BaseY + ((BaseY - CameraY_TopDown) * ((l + 1) * OffsetPerLayer));
                 // Maybe Need remember system so if not moving knows waht to render, of if just leave unchanged render instructions
             }
         LoggedIterator += LoggedPos; // beacuse we navigate position memory unordered by types
@@ -51,28 +51,6 @@ inline void GetEachTilt(const int UniqueObjAmount, const void* Objects, const vo
     #undef BaseX
     #undef BaseY
 #endif
-}
-
-int main() // Call When Player moved;; Recalculate When Moved
-{          // Make Sure to Free Mem
-
-// ~~~~ Should Be sperated Later
-    struct LTSprite
-    {   
-        void** Sprites = nullptr;                
-        unsigned char OffsetPerLayer,            
-            AmountOfLayers;                      
-        // 2-byte padding
-    };  // Total, 20 bytes
-    const LTSprite* UniqueObjBuffer = new LTSprite[6];
-    const void* BaseAdress = GetEachTiltObj(UniqueObjBuffer); // gen in this func then return mem adress int an array??
-    const unsigned char TotalObjectAmount = *(unsigned char*)&BaseAdress;
-    const unsigned char UniqueObjectAmount = *(unsigned char*)&BaseAdress + 8;
-
-    unsigned char* ObjPositions = new unsigned char[ObjAmount];
-
-
-    GetEachTilt(UniqueObjAmount, UniqueObjBuffer, Positions, EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
 }
 
 struct LTSprite
@@ -88,23 +66,27 @@ inline void* GetLTOnScreen(const void* UniqueObjectBuffer)
     unsigned char TotalObjectAmount;
     alignas(1) unsigned char UniqueObjectAmount;
     
+    // ~~~~ Logic For
+    // ...
+
     return &TotalObjectAmount; 
 }
 
 inline void Once()
 {               
-
-// 
+    // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows, Set Up Data
     const LTSprite* UniqueObjBuffer = new LTSprite[6];
-    const unsigned char* TotalObjectAmount = (unsigned char*)GetLTOnScreen(UniqueObjBuffer),
-        UniqueObjectAmount = *(TotalObjectAmount + 8); // dereference toa get that pointer next to it
+    const unsigned char* TotalObjAmount = (unsigned char*)GetLTOnScreen(UniqueObjBuffer), // fix tmr, has to be array to sort through objects and amount per object
+        UniqueObjAmount = *(TotalObjAmount + 8); // dereference toa get that pointer next to it
 
     const unsigned char* ObjPositionsBuffer = new unsigned char[15];
 
-    while (InGame)
+    while (0)                                    // InGame
     {
         // ...
-        GetEachTilt();
+        // ~~~~ If Player Moved
+            // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows
+        GetEachTilt(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount);
         // ...
     }
 }
