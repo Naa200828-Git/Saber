@@ -1,0 +1,58 @@
+#include <unistd.h>
+
+#define __NO_SUGAR__ 0 
+
+// + ** Object Tracker from pos entered if faster then grabbing each obbj on screen including already existing ones ** 
+
+inline void LTSprite_Once()
+{
+// ~~~~ Declarations (to be mvd / rmvd)
+struct LTSprite
+{   
+    void** Sprites = nullptr;           
+    unsigned char Offset,       
+        LayersAmount;                 
+    // 2-byte padding
+};  // Total, 20 bytes
+
+constexpr const unsigned char UniqueObj_BuffSize = 6,
+    ObjPos_BuffSize = 15;
+
+// ~~~~ Buffers * Declaration
+    
+    LTSprite UniqueObj_Buff[UniqueObj_BuffSize]; 
+    short int ObjPos_Buff[ObjPos_BuffSize];
+
+// ~~~~ Size Declarations
+
+    unsigned char UniqueObj_Amount,
+        ObjPos_Amount[UniqueObj_Amount]; 
+
+// ~~~~ Overflow * Declaration
+    
+    LTSprite* UniqueObj_Overflow = new LTSprite[0];
+    unsigned char* ObjPos_Overflow = new unsigned char[0];
+
+// ~~~~ Single Loop For Test
+    
+    // If Moved
+        // If Objects On Screen
+
+    int PosX, PosY;
+    int CameraX = 1, CameraY_TopDown = 20; 
+
+    for (unsigned char o = 0; o < UniqueObj_Amount; o++)
+        for (unsigned char l = 0; l < UniqueObj_Buff[o].LayersAmount; l++)
+            for (unsigned char i = 0; i < ObjPos_Amount[o]; i++)
+            {
+                // ** Display At Instead Of Save, ** The Save Is Temp, ** Is Working On Each Layer 
+                PosX = ((ObjPos_Buff[i] >> 8) - CameraX) * ((l + 1) * UniqueObj_Buff[o].Offset);    // Maybe Seperate ObjPosBuffXY
+                PosY = ((ObjPos_Buff[i] << 8) - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
+            }
+
+}
+
+int main()
+{
+    LTSprite_Once();
+}

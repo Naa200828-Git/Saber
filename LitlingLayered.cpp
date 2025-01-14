@@ -1,5 +1,5 @@
 #define __NO_SUGAR__ 0 
-#define __OVERFLOW__ 1 
+#define __OVERFLOW__ 0 
 
 
 // Camera centered adjusted by 3/4 tilt angle and lengthen screen, or just have a centerd pos used for rendering Tilted Spirtes    
@@ -78,7 +78,6 @@ inline void Once()
     LTSprite UniqueObjBuffer[UniqueObjBufferSize]; 
     unsigned char ObjPositionsBuffer[ObjPositionsBufferSize];
 
-#if __OVERFLOW__
     #define a8uc_t alignas(1) unsigned char 
 
 // ~~~~ Get LT On Screen
@@ -95,7 +94,6 @@ inline void Once()
     // ....
 
 // ~~~~
-#else
 
     a8uc_t ObjPositionsOverflowSize = (TotalObjAmount > UniqueObjBufferSize) ? (TotalObjAmount - UniqueObjBufferSize) : 0;  // else 0
     a8uc_t UniqueObjOverflowSize = (UniqueObjAmount > ObjPositionsBufferSize) ? (UniqueObjAmount - ObjPositionsBufferSize) : 0;
@@ -107,7 +105,6 @@ inline void Once()
     if (UniqueObjOverflowSize) alignas(1) LTSprite* UniqueObjOverflow = new LTSprite[UniqueObjOverflowSize];
     #undef a8uc_t
 
-#endif
 
     // while (0) // InGame
     // {
@@ -115,23 +112,19 @@ inline void Once()
         // ~~~~ If Player Moved
             // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows
 
-#if __OVERFLOW__
-        RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, AllObjects);
-#else
         if (!ObjPositionsOverflowSize && !UniqueObjOverflowSize) 
             RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, AllObjects);
-        /*else if (ObjPositionsOverflowSize) 
+        else if (ObjPositionsOverflowSize) 
             unsigned char* ObjPositionsOverflow = new unsigned char[(TotalObjAmount - UniqueObjBufferSize) * 2];
         else if (UniqueObjOverflowSize) 
             RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount, UniqueObjOverflowSize, UniqueObjOverflow);
         else if (ObjPositionsOverflowSize && UniqueObjOverflowSize) 
             RenderLT(UniqueObjAmount , UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount, ObjPositionsOverflow , ObjPositionsOverflowSize, UniqueObjOverflow, UniqueObjOverflowSize, UniqueObjOverflow);
-        */
+        
         // If Moved Far enough away
         // if (UniqueObjOverflowSize) delete UniqueObjOverflow[UniqueObjOverflowSize - 1];
         // if (ObjPositionsOverflowSize) delete UniqueObjOverflow[ObjPositionsOverflowSize - 1];
         // ...
-#endif
     // }
 }
 
