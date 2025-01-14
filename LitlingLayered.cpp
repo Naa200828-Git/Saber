@@ -1,4 +1,6 @@
 #define __NO_SUGAR__ 0 
+#define __OVERFLOW__ 0 
+
 
 // Camera centered adjusted by 3/4 tilt angle and lengthen screen, or just have a centerd pos used for rendering Tilted Spirtes    
 
@@ -67,16 +69,6 @@ struct LTSprite
     // 2-byte padding
 };  // Total, 20 bytes
 
-inline short int GetLTOnScreen(const void* UniqueObjectBuffer)
-{
-    unsigned char TotalObjectAmount,UniqueObjectAmount;
-    
-    // ~~~~ Logic For
-    // ...
-
-    return (TotalObjectAmount << 8) + UniqueObjectAmount;
-}
-
 inline void Once()
 {               
     // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows, Set Up Data
@@ -86,26 +78,48 @@ inline void Once()
     LTSprite UniqueObjBuffer[UniqueObjBufferSize]; 
     unsigned char ObjPositionsBuffer[ObjPositionsBufferSize];
 
+#if __OVERFLOW__
     #define a8uc_t alignas(1) unsigned char 
-    a8uc_t Temp = GetLTOnScreen(UniqueObjBuffer);
-    a8uc_t TotalObjAmount[Temp[1]] = Temp >> 8; 
-    a8uc_t UniqueObjAmount = Temp << 8; 
+
+// ~~~~ Get LT On Screen
+
+    // Fill Logic
+    // ....
+
+    a8uc_t TotalObjAmount; 
+    a8uc_t UniqueObjAmount; 
+
+    unsigned char AllObjects[UniqueObjAmount];
+
+    // Fill Logic
+    // ....
+
+// ~~~~
+#else
 
     a8uc_t ObjPositionsOverflowSize = (TotalObjAmount > UniqueObjBufferSize) ? (TotalObjAmount - UniqueObjBufferSize) : 0;  // else 0
     a8uc_t UniqueObjOverflowSize = (UniqueObjAmount > ObjPositionsBufferSize) ? (UniqueObjAmount - ObjPositionsBufferSize) : 0;
 
+    a8uc_t* ObjPositionsOverflow = new unsigned char[1];
+    alignas(1) LTSprite* UniqueObjOverflow = new LTSprite[1];
 
     if (ObjPositionsOverflowSize) a8uc_t* ObjPositionsOverflow = new unsigned char[ObjPositionsOverflowSize * 2];
     if (UniqueObjOverflowSize) alignas(1) LTSprite* UniqueObjOverflow = new LTSprite[UniqueObjOverflowSize];
     #undef a8uc_t
+
+#endif
 
     while (0) // InGame
     {
         // ...
         // ~~~~ If Player Moved
             // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows
+
+#if __OVERFLOW__
+        RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, AllObjects);
+#else
         if (!ObjPositionsOverflowSize && !UniqueObjOverflowSize) 
-            RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount);
+            RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, AllObjects);
         /*else if (ObjPositionsOverflowSize) 
             unsigned char* ObjPositionsOverflow = new unsigned char[(TotalObjAmount - UniqueObjBufferSize) * 2];
         else if (UniqueObjOverflowSize) 
@@ -114,8 +128,9 @@ inline void Once()
             RenderLT(UniqueObjAmount , UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount, ObjPositionsOverflow , ObjPositionsOverflowSize, UniqueObjOverflow, UniqueObjOverflowSize, UniqueObjOverflow);
         */
         // If Moved Far enough away
-        if (UniqueObjOverflowSize) delete UniqueObjOverflow[UniqueObjOverflowSize];
-        if (ObjPositionsOverflowSize) delete UniqueObjOverflow[ObjPositionsOverflowSize];
+        // if (UniqueObjOverflowSize) delete UniqueObjOverflow[UniqueObjOverflowSize - 1];
+        // if (ObjPositionsOverflowSize) delete UniqueObjOverflow[ObjPositionsOverflowSize - 1];
         // ...
+#endif
     }
 }
