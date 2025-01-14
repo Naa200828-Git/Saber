@@ -6,7 +6,7 @@
 
 // Now Need To Learn Vulkan
 // Is this all the ipsplacment logic, play with the tilt ratio
-inline void GetEachTilt(const unsigned char UniqueObjAmount, const void* Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
+inline void RenderLT(const unsigned char UniqueObjAmount, const void* Objects, const void* Positions, const unsigned char EachObjAmount[]) // Could Seperate Into Recalc X&Y Individually
 { 
 #if __NO_SUGAR__
     unsigned char LoggedPos = 0, LoggedIterator = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
@@ -15,6 +15,7 @@ inline void GetEachTilt(const unsigned char UniqueObjAmount, const void* Objects
         for(unsigned char l = 0; l < *((unsigned char*)((char*)Objects + (j * 12) + 9)); l++)
             for (unsigned char i = 0; i < EachObjAmount[j]; i++)    // Iterate over each position per object
             {
+                LoggedPos++;
                 *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) 
                     + ((*(unsigned char*)((char*)(Positions + LoggedIterator + i * 2)) - CameraX) * ((l + 1) 
                         * (*((unsigned char*)((char*)Objects + (i * 12) + 8)))));
@@ -31,15 +32,16 @@ inline void GetEachTilt(const unsigned char UniqueObjAmount, const void* Objects
     #define BaseX *(unsigned char*)((char*)(Positions + LoggedIterator + i))
     #define BaseY *(unsigned char*)((char*)(Positions + LoggedIterator + i * 2))
 
-    unsigned char LoggedPos = 0, LoggedIterator = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
+    unsigned char LoggedIterator = 0, LoggedPos = 0; // saves pos to acsess in mem from &Positions, cus iterates continuesl in mem, no reset but forl resets
     for (unsigned char j = 0; j < UniqueObjAmount; j++) // for each type of object, it will work for each layer of that object, then read the stored base positions and then layer by layer calculate the ofset of the layered spite and render it there each frame
     {
         for(unsigned char l = 0; l < LayersAmount; l++)
             for (unsigned char i = 0; i < EachObjAmount[j]; i++)    // Iterate over each position per object
             {
+                LoggedPos++;
                 // Display Sprite at 
-                unsigned char pos = BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
-                unsigned char posx = BaseY + ((BaseY - CameraY_TopDown) * ((l + 1) * OffsetPerLayer));
+                BaseX + ((BaseX - CameraX) * ((l + 1) * OffsetPerLayer));
+                BaseY + ((BaseY - CameraY_TopDown) * ((l + 1) * OffsetPerLayer));
                 // Maybe Need remember system so if not moving knows waht to render, of if just leave unchanged render instructions
             }
         LoggedIterator += LoggedPos; // beacuse we navigate position memory unordered by types
@@ -61,32 +63,41 @@ struct LTSprite
     // 2-byte padding
 };  // Total, 20 bytes
 
-inline void* GetLTOnScreen(const void* UniqueObjectBuffer)
+inline short int GetLTOnScreen(const void* UniqueObjectBuffer)
 {
-    unsigned char TotalObjectAmount;
-    alignas(1) unsigned char UniqueObjectAmount;
+    unsigned char TotalObjectAmount,UniqueObjectAmount;
     
     // ~~~~ Logic For
     // ...
 
-    return &TotalObjectAmount; 
+    return (TotalObjectAmount << 8) + UniqueObjectAmount;
 }
 
 inline void Once()
 {               
     // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows, Set Up Data
-    const LTSprite* UniqueObjBuffer = new LTSprite[6];
-    const unsigned char* TotalObjAmount = (unsigned char*)GetLTOnScreen(UniqueObjBuffer), // fix tmr, has to be array to sort through objects and amount per object
-        UniqueObjAmount = *(TotalObjAmount + 8); // dereference toa get that pointer next to it
+    const LTSprite UniqueObjBuffer[6]; 
+    const unsigned char ObjPositionsBuffer[15]
 
-    const unsigned char* ObjPositionsBuffer = new unsigned char[15];
+    bool NeedObjPositionsOverflow = ? TotalObjAmount > 15 : 1,  // else 0
+        alignas(1) NeedUniqueObjOverflow = ? UniqueObjAmount > 15 : 1;
 
-    while (0)                                    // InGame
+    alignas(1) unsigned char Temp = GetLTOnScreen(UniqueObjBuffer),
+        alignas(1) TotalObjAmount = Temp >> 8, 
+        alignas(1) UniqueObjAmount = Temp << 8; 
+
+    if (NeedObjPositionsOverflow)
+        alignas(1) unsigned char* ObjPositionsOverflow = new unsigned char[(TotalObjAmount - 15) * 2];
+    if (NeedUniqueObjOverflow > 6)
+        alignas(1) LTSprite* UniqueObjOverflow = new LTSprite[(TotalObjAmount - 6)];
+    while (0) // InGame
     {
         // ...
         // ~~~~ If Player Moved
             // ~~~~ Display Layer Tilit Objects On Screen, No interact, Shadows
-        GetEachTilt(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount);
+        if (NeedObjPositionsOverflow && NeedUniqueObjOverflow)
+            RenderLT(UniqueObjAmount, UniqueObjBuffer, ObjPositionsBuffer, TotalObjAmount, ObjPositionsOverflow ,UniqueObjOverflow);
+        else if ()
         // ...
     }
 }
