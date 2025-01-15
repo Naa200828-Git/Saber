@@ -7,13 +7,14 @@
 inline void LTSprite_Once()
 {
 // ~~~~ Declarations (to be mvd / rmvd)
-struct LTSprite
+struct LayeredTilt_Sprite
 {   
     void** Sprites = nullptr;           
     unsigned char Offset,       
         LayersAmount;                 
     // 2-byte padding
 };  // Total, 20 bytes
+#define LTSprite LayeredTilt_Sprite
 
 constexpr const unsigned char UniqueObj_BuffSize = 6,
     ObjPos_BuffSize = 15;
@@ -26,32 +27,33 @@ constexpr const unsigned char UniqueObj_BuffSize = 6,
 
 // ~~~~ Size Declarations
 
-    unsigned char UniqueObj_Amount,
-        ObjPosX_Amount[UniqueObj_Amount]; 
+    unsigned char UniqueObj_Amount = 1,
+        ObjPos_BuffAmount[ObjPos_BuffSize]; 
 
 // ~~~~ Overflow * Declaration
     
     LTSprite* UniqueObj_Overflow = new LTSprite[0];
-    unsigned char* ObjPosX_Overflow = new unsigned char[0];
-    unsigned char* ObjPosY_Overflow = new unsigned char[0];
+    unsigned char* ObjPosX_Overflow = new unsigned char[0],
+        * ObjPosY_Overflow = new unsigned char[0],
+        * ObjPos_Amount_Overflow = new unsigned char[0];
 
 // ~~~~ Single Loop For Test
      
     // If Moved
         // If Objects On Screen
 
+    // Temp:
     int PosX, PosY;
-    int CameraX = 1, CameraY_TopDown = 20; 
+    int CameraX, CameraY_TopDown; 
 
     for (unsigned char o = 0; o < UniqueObj_Amount; o++)
         for (unsigned char l = 0; l < UniqueObj_Buff[o].LayersAmount; l++)
-            for (unsigned char i = 0; i < ObjPos_Amount[o]; i++)
+            for (unsigned char p = 0; p < ObjPos_BuffAmount[o]; p++)
             {
                 // ** Display At Instead Of Save, ** The Save Is Temp, ** Is Working On Each Layer 
-                PosX = (ObjPosX_Buff[i] - CameraX) * ((l + 1) * UniqueObj_Buff[o].Offset);    // Maybe Seperate ObjPosBuffXY
-                PosY = (ObjPosY_Buff[i] - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
+                PosX = (ObjPosX_Buff[p] - CameraX) * ((l + 1) * UniqueObj_Buff[o].Offset);  
+                PosY = (ObjPosY_Buff[p] - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
             }
-
 }
 
 int main()

@@ -86,7 +86,7 @@ template <typename Type> void CCL_Darr_Free(CCL_Darr<Type>& Arr) {
 // Needs: FireArms & Heals data filled structs  
 // Objects: FireArms, Heals, -> Items
 
-struct sItemOutline
+struct sItemOutline // mybe use buffer for faster acsess
 {
     unsigned short int NameSize;
     char * ItemName = nullptr;   
@@ -120,6 +120,12 @@ struct sHealthItem : sItemOutline
     unsigned char HealsBy, HealCap, TimeToUse; 
 };
 
+struct sAmmo : sItemOutline
+{
+    short int MaxStack;
+    unsigned char GunCompat_ID; 
+}
+
 struct sItem
 {   // Gun, Shotgun, Sniper, Grenade, Health, Shield
     char * ItemType = nullptr;      // Enum Describe Bit Layout
@@ -128,26 +134,16 @@ struct sItem
 
 #pragma endregion
 #pragma region Individual Player Data
-// ~~~~ Algorithms
-//
-//
 
-// ~~~~ Player Facing Mouse Orientation Calculation
-//
-//
-
-// ~~~~ Bullet Damage Caclulation
-//
-//
 struct sInGamePlayer
 {
     sItem HotBar[5];
+    sAmmo Ammo_HotBar[5]; // first five can be CNTRL + Scrolled Through For Weapon Type 
+    sAmmo * AmmoStores = nullptr; 
 
-    unsigned short int * AmmoID = nullptr,
-        * AmmoStores = nullptr; // Need Id & amount in short int 
-    unsigned char Health = 100, Shield = 0, Sprint = 55;
+    unsigned char Health = 100, Shield = 0, Sprint = 35;
     // function destructor, not built in destructor 
-    int PositionX, PositionY;
+    int PosX, PosY; // make type consistant
 };
 
 #pragma endregion
@@ -159,8 +155,8 @@ inline float CalcOrientation(const int MouseX, const int MouseY) {
     constexpr const float Pi = 3.14159265f,
         TwoPi = 2.0f * Pi;
 
-    float ratio = (float)(MouseY) / (float)(MouseX);
-    float AngleRadians;
+    float ratio = (float)(MouseY) / (float)(MouseX),
+        AngleRadians;
 
     if (MouseX > 0)      AngleRadians = ratio / (1.0f + ratio * ratio);       // Approximation of atan for 1st and 4th quadrants
     else if (MouseX < 0) AngleRadians = Pi + ratio / (1.0f + ratio * ratio);  // Adjust by Pi for 2nd and 3rd quadrants   
@@ -229,55 +225,57 @@ inline unsigned char BulletDamage(const int ShotFromX, const int ShotFromY,  con
 
 // ~~~~~ Tilting Layered, LT
 
-// Temp Note, Involves texture Stretching ** Along Straight but shifted Lines
-struct LTSprite
+inline void LTSprite_Once()
+{
+// ~~~~ Declarations (to be mvd / rmvd)
+struct LayeredTilt_Sprite
 {   
-    const int TiltRatio;    // Const per Each layer
-    const unsigned int BasePosX, BasePosY; 
-    const unsigned char OffsetPerLayer;       
-    // WIll Display Each Layer At offset insetad of Calulating Offset, Saving, Then Displaying Each Layers of Structs Offset
-    const unsigned char AmountOfLayers;
-    void* Sprites = nullptr; // Ordered Bottom To Top 
-};
+    void** Sprites = nullptr;           
+    unsigned char Offset,       
+        LayersAmount;                 
+    // 2-byte padding
+};  // Total, 20 bytes
+#define LTSprite LayeredTilt_Sprite
 
-// ~~~~~ Tilting Solid Flat, LSF
-struct LSFSprite
-{
-    signed char AmountOfWalls;
-    // Like A Wrap Around From North Facing Wall -> West
-    // If Amount Of Walls Is Signed, Means A Roof and their would be a +1 Extra Sprite in Arr
-    void* Sprites = nullptr;  
-};
+constexpr const unsigned char UniqueObj_BuffSize = 6,
+    ObjPos_BuffSize = 15;
 
-inline void Calc_LTSprite_Offset(const int CameraPosXY, const unsigned short int Amount, const void* ObjectArr)
-{
+// ~~~~ Buffers * Declaration
+    
+    LTSprite UniqueObj_Buff[UniqueObj_BuffSize]; 
+    unsigned char ObjPosX_Buff[ObjPos_BuffSize],
+        ObjPosY_Buff[ObjPos_BuffSize];
 
+// ~~~~ Size Declarations
 
+    unsigned char UniqueObj_Amount = 1,
+        ObjPos_BuffAmount[ObjPos_BuffSize]; 
+
+// ~~~~ Overflow * Declaration
+    
+    LTSprite* UniqueObj_Overflow = new LTSprite[0];
+    unsigned char* ObjPosX_Overflow = new unsigned char[0],
+        * ObjPosY_Overflow = new unsigned char[0],
+        * ObjPos_Amount_Overflow = new unsigned char[0];
+
+// ~~~~ Single Loop For Test
+     
+    // If Moved
+        // If Objects On Screen
+
+    // Temp:
+    /* const */ int PosX, PosY;
+        CameraX, CameraY_TopDown; 
+
+    for (unsigned char o = 0; o < UniqueObj_Amount; o++)
+        for (unsigned char l = 0; l < UniqueObj_Buff[o].LayersAmount; l++)
+            for (unsigned char p = 0; p < ObjPos_BuffAmount[o]; p++)
+            {
+                // ** Display At Instead Of Save, ** The Save Is Temp, ** Is Working On Each Layer 
+                PosX = (ObjPosX_Buff[p] - CameraX) * ((l + 1) * UniqueObj_Buff[o].Offset);  
+                PosY = (ObjPosY_Buff[p] - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
+            }
 }
 
+#pragma region ColorFill Sprite Tilting
 
-struct LTSprite
-{   
-    const unsigned short int BasePosX; 
-    const unsigned char OffsetPerLayer;       
-    const unsigned char AmountOfLayers;
-    void* Sprites = nullptr; // Ordered Bottom To Top 
-};
-
-void foo()
-{
-    // array of objects
-    
-    // Base Position for each partical cast then calculate per cast
-
-    // ~~~~ Partical Casting
-    // Will: Take The Object, Have An Amount Of That Object And Where They Are Each
-    /* Need:
-        Spite Arr for each layer,
-        Array Of Base Positions X&Y
-        Return OffSet For Each Layer
-    */
-    
-    unsigned char ObjectsAmount; // amount of the objects int he screen / to render;
-    long int SpriteTilt[ObjectsAmount];// = Calc_LTSprite_Offset(CameraPosXY, );
-}
