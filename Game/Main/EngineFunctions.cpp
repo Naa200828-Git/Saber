@@ -124,7 +124,7 @@ struct sAmmo : sItemOutline
 {
     short int MaxStack;
     unsigned char GunCompat_ID; 
-}
+};
 
 struct sItem
 {   // Gun, Shotgun, Sniper, Grenade, Health, Shield
@@ -264,7 +264,7 @@ constexpr const unsigned char UniqueObj_BuffSize = 6,
         // If Objects On Screen
 
     // Temp:
-    /* const */ int PosX, PosY;
+    /* const */ int PosX, PosY,
         CameraX, CameraY_TopDown; 
 
     for (unsigned char o = 0; o < UniqueObj_Amount; o++)
@@ -276,3 +276,4 @@ constexpr const unsigned char UniqueObj_BuffSize = 6,
                 PosY = (ObjPosY_Buff[p] - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
             }
 }
+

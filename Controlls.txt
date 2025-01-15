@@ -1,30 +1,45 @@
 In Game:
 
-    ScrollWheel_UP :   Cycle Up In Weapon / Main Hotbar. W/ Loop Around
-    ScrollWheel_DOWN : Cycle Down In Weapon / Main Hotbar. W/ Loop Around
+    Standard Actions & Default Keybinds:
 
-    CNTR + ScrollWheel_UP :   Cycle Up In Ammo Hotbar For Weapon Type (Size up to 5 by diff Ammo Amount). W/ Loop Around
-    CNTR + ScrollWheel_DOWN : Cycle Down In Ammo Hotbar For Weapon Type (Size up to 5 by diff Ammo Amount). W/ Loop Around
+        ScrollWheel_UP :          Cycle Up In Weapon / Main Hotbar. W/ Loop Around
+        ScrollWheel_DOWN :        Cycle Down In Weapon / Main Hotbar. W/ Loop Around
 
-    MOUSE_DOWN_R : Scope If Gun un Hand,     
-    MOUSE_DOWN_L : Use Item in Hand, else: Punch
+        CNTR + ScrollWheel_UP :   Cycle Up In Ammo Hotbar For Weapon Type (Size up to 5 by diff Ammo Amount). W/ Loop Around
+        CNTR + ScrollWheel_DOWN : Cycle Down In Ammo Hotbar For Weapon Type (Size up to 5 by diff Ammo Amount). W/ Loop Around
 
+        MOUSE_DOWN_R :            Scope If Gun un Hand
+        MOUSE_DOWN_L :            Use Item in Hand, else: Punch
 
-Switch:
-    Keyboard_W :
-    Keyboard_A :
-    Keyboard_S :
-    Keyboard_D :
+        Switch:
+            Keyboard_W or Keyboard_I : Move Upwards
+            Keyboard_A or Keyboard_J : Move Left
+            Keyboard_S or Keyboard_K : Move Downwards
+            Keyboard_D or Keyboard_L : Move Right
 
-End Switch-
-    Keyboard_1 :
-    Keyboard_2 :
-    Keyboard_3 :
-    Keyboard_4 :
-    Keyboard_5 :
+        Keyboard_1 :        Jump To Hotbar Slot 1
+        Keyboard_2 :        Jump To Hotbar Slot 2
+        Keyboard_3 :        Jump To Hotbar Slot 3
+        Keyboard_4 :        Jump To Hotbar Slot 4
+        Keyboard_5 :        Jump To Hotbar Slot 5
+        Keyboard_Space :    Jump To Hotbar Slot Hand
 
-    Keyboard_Space :
+        CNTR + Keyboard_1 : Jump To Ammo Hotbar Slot 1 
+        CNTR + Keyboard_2 : Jump To Hotbar Slot 2, or if less than: Jump To Max
+        CNTR + Keyboard_3 : Jump To Hotbar Slot 3, or if less than: Jump To Max
+        CNTR + Keyboard_4 : Jump To Hotbar Slot 4, or if less than: Jump To Max
+        CNTR + Keyboard_5 : Jump To Hotbar Slot 5, or if less than: Jump To Max
 
-    Keyboard_E :
+        Keyboard_E :        Interact With Enviroment
+        Keyboard_I :        Ping Item
+        Keyboard_M :        Opens MiniMap, if open, Closes
+        Keyboard_T :        Aim Throw Item, When Release, Throw Item In Hand
+        Keyboard_R :        if not full: Force Reload
 
-    
+    Click Actions:
+
+        MOUSE_DOWN_L or MOUSE_DOWN_M : if MiniMap Open, & Wihtin Boundaries of MiniMap : Make Marker
+        MOUSE_DOWN_M :  Mark closest object In Line Of Sight. W/ + Screen Width / FOV Max Distance
+        
+        
+
