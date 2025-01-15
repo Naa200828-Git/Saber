@@ -1,0 +1,30 @@
+In Game:
+
+    ScrollWheel_UP :   Cycle Up In Weapon / Main Hotbar. W/ Loop Around
+    ScrollWheel_DOWN : Cycle Down In Weapon / Main Hotbar. W/ Loop Around
+
+    CNTR + ScrollWheel_UP :   Cycle Up In Ammo Hotbar For Weapon Type (Size up to 5 by diff Ammo Amount). W/ Loop Around
+    CNTR + ScrollWheel_DOWN : Cycle Down In Ammo Hotbar For Weapon Type (Size up to 5 by diff Ammo Amount). W/ Loop Around
+
+    MOUSE_DOWN_R : Scope If Gun un Hand,     
+    MOUSE_DOWN_L : Use Item in Hand, else: Punch
+
+
+Switch:
+    Keyboard_W :
+    Keyboard_A :
+    Keyboard_S :
+    Keyboard_D :
+
+End Switch-
+    Keyboard_1 :
+    Keyboard_2 :
+    Keyboard_3 :
+    Keyboard_4 :
+    Keyboard_5 :
+
+    Keyboard_Space :
+
+    Keyboard_E :
+
+    

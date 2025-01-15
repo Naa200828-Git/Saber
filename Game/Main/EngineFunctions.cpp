@@ -276,6 +276,3 @@ constexpr const unsigned char UniqueObj_BuffSize = 6,
                 PosY = (ObjPosY_Buff[p] - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
             }
 }
-
-#pragma region ColorFill Sprite Tilting
-
