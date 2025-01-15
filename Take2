@@ -1,8 +1,8 @@
-#include <unistd.h>
 
 #define __NO_SUGAR__ 0 
 
 // + ** Object Tracker from pos entered if faster then grabbing each obbj on screen including already existing ones ** 
+// extern cntr + scroll swaps ammo in hotbar for weapon type
 
 inline void LTSprite_Once()
 {
@@ -21,20 +21,22 @@ constexpr const unsigned char UniqueObj_BuffSize = 6,
 // ~~~~ Buffers * Declaration
     
     LTSprite UniqueObj_Buff[UniqueObj_BuffSize]; 
-    short int ObjPos_Buff[ObjPos_BuffSize];
+    unsigned char ObjPosX_Buff[ObjPos_BuffSize],
+        ObjPosY_Buff[ObjPos_BuffSize];
 
 // ~~~~ Size Declarations
 
     unsigned char UniqueObj_Amount,
-        ObjPos_Amount[UniqueObj_Amount]; 
+        ObjPosX_Amount[UniqueObj_Amount]; 
 
 // ~~~~ Overflow * Declaration
     
     LTSprite* UniqueObj_Overflow = new LTSprite[0];
-    unsigned char* ObjPos_Overflow = new unsigned char[0];
+    unsigned char* ObjPosX_Overflow = new unsigned char[0];
+    unsigned char* ObjPosY_Overflow = new unsigned char[0];
 
 // ~~~~ Single Loop For Test
-    
+     
     // If Moved
         // If Objects On Screen
 
@@ -46,8 +48,8 @@ constexpr const unsigned char UniqueObj_BuffSize = 6,
             for (unsigned char i = 0; i < ObjPos_Amount[o]; i++)
             {
                 // ** Display At Instead Of Save, ** The Save Is Temp, ** Is Working On Each Layer 
-                PosX = ((ObjPos_Buff[i] >> 8) - CameraX) * ((l + 1) * UniqueObj_Buff[o].Offset);    // Maybe Seperate ObjPosBuffXY
-                PosY = ((ObjPos_Buff[i] << 8) - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
+                PosX = (ObjPosX_Buff[i] - CameraX) * ((l + 1) * UniqueObj_Buff[o].Offset);    // Maybe Seperate ObjPosBuffXY
+                PosY = (ObjPosY_Buff[i] - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
             }
 
 }
