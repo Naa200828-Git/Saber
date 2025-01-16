@@ -10,6 +10,7 @@ In Game:
 
         MOUSE_DOWN_R :            Scope If Gun un Hand
         MOUSE_DOWN_L :            Use Item in Hand, else: Punch
+        MOUSE_DOWN_M :            Aim 3D Demension / Up and Down ** Have higher accuray this rate
 
         Switch:
             Keyboard_W or Keyboard_I : Move Upwards
