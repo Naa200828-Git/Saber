@@ -1,3 +1,6 @@
+#ifndef  __CCL_SQRT__
+#define __CCL_SQRT__
+
 inline unsigned char CCL_inline_Sqrt(const unsigned short int cValue) {
     unsigned char Result = 0,
         Bit = 1 << 7;                                // Start with the highest Bit for an 8-Bit Result
@@ -81,3 +84,5 @@ inline unsigned char CCL_inline_Sqrt_64_t(const unsigned long long int cValue) {
     }
     return Result;
 }
+
+#endif

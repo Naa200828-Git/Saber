@@ -10,9 +10,9 @@ Controlls:
             CNTR + ScrollWheel_UP :        Cycle Up In Ammo Hotbar For Weapon Type (Size up to 5 by diff Ammo Amount). W/ Loop Around
             CNTR + ScrollWheel_DOWN :      Cycle Down In Ammo Hotbar For Weapon Type (Size up to 5 by diff Ammo Amount). W/ Loop Around
 
-            MOUSE_DOWN_R :                 Scope If Gun un Hand
+            MOUSE_DOWN_R :                 if not 3D Aim, Scope If Gun un Hand
             MOUSE_DOWN_L :                 Use Item in Hand, else: Punch
-            MOUSE_DOWN_M :                 Aim 3D Demension / Up and Down ** Have higher accuray this rate
+            MOUSE_DOWN_M :                 Swap Aim to 3D Demension / Up and Down ** Have higher accuray this rate
 
             Switch:
                 Keyboard_W or Keyboard_I : Move Upwards
@@ -38,12 +38,12 @@ Controlls:
             Keyboard_M :                   Opens MiniMap, if open, Closes
             Keyboard_T :                   Aim Throw Item, When Release, Throw Item In Hand
             Keyboard_R :                   if not full: Force Reload
+            Keyboard_P :                 Mark closest object In Line Of Sight. W/ + Screen Width / FOV Max Distance
             Keyboard_F & Press:            Opens Full Inventory
 
         Click Actions:
 
             MOUSE_DOWN_L or MOUSE_DOWN_M : if MiniMap Open, & Wihtin Boundaries of MiniMap : Make Marker
-            MOUSE_DOWN_M :                 Mark closest object In Line Of Sight. W/ + Screen Width / FOV Max Distance
         
             MOUSE_DOWN_L :                 if Over Hotbar, Click drag drop, to swap W/ Other Items In Position
             MOUSE_DOWN_L :                 if Over MiniMap, Click To Open, 

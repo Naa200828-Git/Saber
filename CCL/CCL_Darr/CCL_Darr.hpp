@@ -1,4 +1,4 @@
-#ifdef __CCL_DARR__
+#ifndef __CCL_DARR__
 #define __CCL_DARR__
 
 template <typename Type> struct CCL_Darr {

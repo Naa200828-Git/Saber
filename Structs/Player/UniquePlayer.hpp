@@ -1,6 +1,10 @@
 #ifndef __IN_GAME_PLAYER__
 #define __IN_GAME_PLAYER__
 
+
+#include "Structs/Items/Item.hpp"
+#include "Structs/Items/Types/Ammo.hpp"
+
 struct sInGamePlayer
 {
     sItem HotBar[5];
