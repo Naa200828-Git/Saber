@@ -1,4 +1,4 @@
-#ifdef __CCL_DARR_CADJSIZE__
+#ifndef __CCL_DARR_CADJSIZE__
 #define __CCL_DARR_CADJSIZE__
 
 template <typename Type> void CCL_Darr_cAdjSize(CCL_Darr<Type>& Arr, const unsigned char cAdjSize) {
