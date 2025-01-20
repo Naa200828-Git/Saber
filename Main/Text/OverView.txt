@@ -1,4 +1,4 @@
-
+Name: 
 
 Controlls: 
 
@@ -40,7 +40,7 @@ Controlls:
             Keyboard_M :                   Opens MiniMap, if open, Closes
             Keyboard_T :                   Aim Throw Item, When Release, Throw Item In Hand
             Keyboard_R :                   if not full: Force Reload
-            Keyboard_P :                 Mark closest object In Line Of Sight. W/ + Screen Width / FOV Max Distance
+            Keyboard_P :                   Mark closest object In Line Of Sight. W/ + Screen Width / FOV Max Distance
             Keyboard_F & Press:            Opens Full Inventory
 
         Click Actions:
