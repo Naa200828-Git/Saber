@@ -2,6 +2,7 @@
 #define __LTSPRITE__
 
 #include "Includes Code\Structs\Sprites\Z-TilitSprite.hpp"
+#include "Main\Includes\Constexprs.hpp"
 #include "Main\Includes\CompileOptions.hpp"
 
 #define LTSprite LayeredTilt_Sprite
@@ -36,6 +37,10 @@ inline void Render_LTSprite(
                 PosY = (ObjPosY_Buff[p] - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
             }
 }
+inline void LTSprite_Loop()
+{
+
+}
 inline void LTSprite_Once()
 {// ~~~~ Buffers * Declaration
     LTSprite UniqueObj_Buff[ccUniqueObj_BuffSize]; 
@@ -50,16 +55,19 @@ inline void LTSprite_Once()
     unsigned char* ObjPosX_Overflow = new unsigned char[1],
         * ObjPosY_Overflow = new unsigned char[1],
         * ObjPos_Amount_Overflow = new unsigned char[1];
-
-// ~~~~ Single Loop For Test
+// **** Single Loop For Test
+// - Should not be in a loop, should dbe in itself 
 
 // ~~~~ Handle Overflow
 
     UniqueObj_Amount = 0/*Get Num*/;// Per instance
     if (UniqueObj_Amount > ccUniqueObj_BuffSize)
+        Render_LTSprite(UniqueObj_Amount, UniqueObj_Buff, ObjPos_BuffAmount,ObjPosX_Buff, ObjPosY_Buff, UniqueObj_Overflow);
+    else if
 
-#endif
-    Render_LTSprite(UniqueObj_Amount, UniqueObj_Buff, ObjPos_BuffAmount, ObjPosX_Buff, ObjPosY_Buff);
+#else
+    Render_LTSprite(UniqueObj_Amount, UniqueObj_Buff, ObjPos_BuffAmount,ObjPosX_Buff, ObjPosY_Buff);
+#endif 
 }
 
 #endif

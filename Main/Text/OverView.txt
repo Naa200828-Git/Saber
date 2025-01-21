@@ -1,4 +1,4 @@
-Name:                                      Steel & (Powder, Saber, Fog ect.. Choose)                                    
+Name:                                      Steel & Soul                             
 Premise:                                   A 2D Gun Game W/ 3D aiming
 
 Controlls: 
@@ -52,3 +52,9 @@ Controlls:
             MOUSE_DOWN_L :                 if Over Hotbar, Click drag drop, to swap W/ Other Items In Position
             MOUSE_DOWN_L :                 if Over MiniMap, Click To Open, 
             MOUSE_DOWN_L :                 if MiniMap Open, if Click Over Edge of MiniMap, Close Map 
+
+Functions :
+
+    In Game:
+
+        3D Aim :                            collasps to surface
