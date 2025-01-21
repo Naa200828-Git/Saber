@@ -1,5 +1,5 @@
-Name:                                      
-Premise:
+Name:                                      Steel & (Powder, Saber, Fog ect.. Choose)                                    
+Premise:                                   A 2D Gun Game W/ 3D aiming
 
 Controlls: 
 
@@ -42,7 +42,8 @@ Controlls:
             Keyboard_T :                   Aim Throw Item, When Release, Throw Item In Hand
             Keyboard_R :                   if not full: Force Reload
             Keyboard_P :                   Mark closest object In Line Of Sight. W/ + Screen Width / FOV Max Distance
-            Keyboard_F & Press:            Opens Full Inventory
+            SHFT + Keyboard_E :            Interact With Enviroment, priotritize chest
+            Keyboard_F & Press :           Opens Full Inventory
 
         Click Actions:
 
