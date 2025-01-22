@@ -9,7 +9,7 @@ struct Map_Chunk
         const unsigned char Obj_IDs,
         const void* GroundTexture
         ){
-        Obj_Data[Obj_Positions][Obj_IDs];
+        unsigned char Obj_Data[Obj_Positions][Obj_IDs];
         void* GroundTexture;
     }
 
