@@ -8,14 +8,14 @@
 #include <ctime>
 
 unsigned int CCL_XOR_13L17R5L_32_t(const unsigned int cMax) {
-    unsigned int Seed = (unsigned int)(std::time(0));
+    unsigned int Seed = (unsigned int)(std::time(NULL));
     Seed ^= Seed << 13;
     Seed ^= Seed >> 5;
     
     return Seed % (cMax + 1);
 }
-bool CCL_TF() {  // Xorshift RNG function
-    unsigned int Seed = (unsigned int)(std::time(0));
+bool CCL_TF() {  // Maybe Make inline
+    unsigned int Seed = (unsigned int)(std::time(NULL));
     return Seed & 0b1;
 }
 
@@ -26,7 +26,7 @@ int main()
         ccMaze_SizeY = 150,
         MaxPath_Size = (ccMaze_SizeX + ccMaze_SizeY / 2) * 0.1;   
 // ~~~~ Choose End Points
-    bool Connected = CCL_TF();
+    Sized_Int Connected = CCL_TF();
 
     Sized_Int StartPoint;  
     if (Connected) StartPoint = CCL_XOR_13L17R5L_32_t(ccMaze_SizeX >> 2) + 1;
@@ -51,20 +51,56 @@ int main()
         unsigned char Direction;
     };
     
-    sPath* PathFromStart = new sPath[1],
-        * PathFromEnd = new sPath[1];
+    struct CCL_Full_Darr { // split into sperate functions that take & params for functions
+        sPath* Data;
+        Sized_Int Size;
+        Sized_Int Capacity;
 
-    while (!Connected)
+        CCL_Full_Darr() : Data(nullptr), Size(0), Capacity(0) {}
+
+        ~CCL_Full_Darr() {
+            delete[] Data;
+        }   
+
+        void push_back(const sPath& Item) 
+        {
+            if (Size == Capacity) 
+            {
+                Capacity = (Capacity == 0) ? 1 : Capacity * 2;
+                sPath* newData = new sPath[Capacity];
+                
+                for (Sized_Int i = 0; i < Size; ++i) 
+                    newData[i] = Data[i];
+
+                delete[] Data;
+                Data = newData;
+            }
+            Data[Size++] = Item;
+        }
+
+        sPath& operator[](Sized_Int Index) {
+            return Data[Index];
+        }
+    };
+
+    CCL_Full_Darr PathFromStart,
+        PathFromEnd;
+
+    while (Connected) // maybe put reset at begining and do not init with reset functions
     {
 // ~~~~ Fill Path
-        // how does this work as vector / arr
-        // assign
+        // Fill 
+        // set PathPos's
+// ~~~~ Reset
+        PathFromStart[Connected].Length = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
+        PathFromStart[Connected].Direction = CCL_XOR_13L17R5L_32_t(4);
 
-// ~~~~ Reset ** Maybe just fill in data from location
-        PathFromStart -> Length = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
-        PathFromStart -> Direction = CCL_XOR_13L17R5L_32_t(4);
+        PathFromStart[Connected].Length = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
+        PathFromStart[Connected].Direction = CCL_XOR_13L17R5L_32_t(4);
 
         if (PathPosX[0], PathPosX[1], PathPosY[0], PathPosY[1]) break; // If Connected
+        Connected++;
     }
-
+// ~~~~ Maze Finished Generating
 }
+
