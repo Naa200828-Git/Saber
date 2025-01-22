@@ -77,7 +77,7 @@ inline bool GenerateMaze()
 // ~~~~ Bridge
     Connected = 0;
 
-    Sized_Int PathPosX[2], PathPosY[2],
+    Sized_Int PathPosX[2] = {StartPoint, }, PathPosY[2],
         Path = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
     signed char Direction = CCL_XOR_13L17R5L_32_t(4);
 
@@ -90,7 +90,7 @@ inline bool GenerateMaze()
         // Fill 
         // set PathPos's
 // ~~~~ Reset
-        CCL_Darr_cAdjSize(PathFromStart, 1);
+        CCL_Darr_cAdjSize(PathFromStart, 1); // Slower than Stack Acsess but less mem
 
         PathFromStart.Data[Connected].Length = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
         PathFromStart.Data[Connected].Direction = CCL_XOR_13L17R5L_32_t(4);
