@@ -7,7 +7,9 @@
 
 #include <ctime>
 
+// #define __LEIGHTWHEIGHT_OR_FAST__ 0 // for asm,  -Og / Os, O3 
 #define Sized_Int unsigned int    
+
 constexpr const Sized_Int ccMaze_SizeX = 100,
     ccMaze_SizeY = 150,
     MaxPath_Size = (ccMaze_SizeX + ccMaze_SizeY / 2) * 0.1;   
@@ -60,25 +62,43 @@ void CCL_Darr_Free(CCL_Darr& Arr) {
 };
 
 inline bool GenerateMaze()
-{   
+{   // maybe make for-loop?
 // ~~~~ Choose End Points
-    Sized_Int Connected = CCL_TF();
-
-    Sized_Int StartPoint;  
+    Sized_Int Connected = CCL_TF(),
+        StartPoint;  
     if (Connected) StartPoint = CCL_XOR_13L17R5L_32_t(ccMaze_SizeX >> 2) + 1;
     else           StartPoint = (CCL_XOR_13L17R5L_32_t(ccMaze_SizeX >> 2) * 2) - 1;
 
+    Sized_Int PathPosStart[2];
+    if (Connected) 
+    {
+        PathPosStart[0] = 0; // combined points, fix ***           // Left Wall
+        PathPosStart[1] = StartPoint; // combined points, fix ***           // Left Wall
+    }
+    else   
+    {
+        PathPosStart[0] = StartPoint; // x
+        PathPosStart[1] = ccMaze_SizeY; // y Roof
+    }
+
+    Connected = CCL_TF();
     Sized_Int EndPoint;
     if (Connected) EndPoint = CCL_XOR_13L17R5L_32_t(ccMaze_SizeY >> 2) + 1;
     else           EndPoint = (CCL_XOR_13L17R5L_32_t(ccMaze_SizeY >> 2) * 2) - 1;
 
-    bool StartPoint_Face = CCL_TF(),
-        EndPoint_Face = CCL_TF();
+    Sized_Int PathPosEnd[2];
+    if (Connected) 
+    {
+        PathPosEnd[0] = EndPoint; // Right Wall
+        PathPosEnd[1] = ccMaze_SizeX; // Right Wall
+    }
+    else
+    {
+        PathPosEnd[0] = 0;            // Floor
+        PathPosEnd[1] = EndPoint;            // Floor
+    }
 // ~~~~ Bridge
-    Connected = 0;
-
-    Sized_Int PathPosX[2] = {StartPoint, }, PathPosY[2],
-        Path = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
+    Sized_Int Path = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
     signed char Direction = CCL_XOR_13L17R5L_32_t(4);
 
     CCL_Darr PathFromStart,
@@ -87,7 +107,6 @@ inline bool GenerateMaze()
     while (1) // maybe put reset at begining and do not init with reset functions
     {
 // ~~~~ Fill Path
-        // Fill 
         // set PathPos's
 // ~~~~ Reset
         CCL_Darr_cAdjSize(PathFromStart, 1); // Slower than Stack Acsess but less mem
@@ -100,7 +119,8 @@ inline bool GenerateMaze()
         PathFromEnd.Data[Connected].Length = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
         PathFromEnd.Data[Connected].Direction = CCL_XOR_13L17R5L_32_t(4);
 
-        if (PathPosX[0], PathPosX[1], PathPosY[0], PathPosY[1]) break; // If Connected
+    // Check Overlap so iterate from beggining of each line to end
+        if (PathPosEnd[0] == PathPosStart[0] && PathPosStart[1] == PathPosEnd[1]) break; // If Connected
         Connected++;
     }
 // ~~~~ Maze Finished Generating
