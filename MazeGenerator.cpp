@@ -65,20 +65,21 @@ inline bool GenerateMaze()
 {   // maybe make for-loop?
 // ~~~~ Choose End Points
     Sized_Int Connected = CCL_TF(),
-        StartPoint;  
+        StartPoint; 
+
     if (Connected) StartPoint = CCL_XOR_13L17R5L_32_t(ccMaze_SizeX >> 2) + 1;
     else           StartPoint = (CCL_XOR_13L17R5L_32_t(ccMaze_SizeX >> 2) * 2) - 1;
 
     Sized_Int PathPosStart[2];
     if (Connected) 
     {
-        PathPosStart[0] = 0; // combined points, fix ***           // Left Wall
-        PathPosStart[1] = StartPoint; // combined points, fix ***           // Left Wall
+        PathPosStart[0] = 0; 
+        PathPosStart[1] = StartPoint; 
     }
     else   
     {
-        PathPosStart[0] = StartPoint; // x
-        PathPosStart[1] = ccMaze_SizeY; // y Roof
+        PathPosStart[0] = StartPoint; 
+        PathPosStart[1] = ccMaze_SizeY; 
     }
 
     Connected = CCL_TF();
@@ -89,13 +90,13 @@ inline bool GenerateMaze()
     Sized_Int PathPosEnd[2];
     if (Connected) 
     {
-        PathPosEnd[0] = EndPoint; // Right Wall
-        PathPosEnd[1] = ccMaze_SizeX; // Right Wall
+        PathPosEnd[0] = EndPoint;     
+        PathPosEnd[1] = ccMaze_SizeX; 
     }
     else
     {
-        PathPosEnd[0] = 0;            // Floor
-        PathPosEnd[1] = EndPoint;            // Floor
+        PathPosEnd[0] = 0;            
+        PathPosEnd[1] = EndPoint;     
     }
 // ~~~~ Bridge
     Sized_Int Path = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
@@ -104,23 +105,24 @@ inline bool GenerateMaze()
     CCL_Darr PathFromStart,
         PathFromEnd;
 
+    Connected = 0;
     while (1) // maybe put reset at begining and do not init with reset functions
     {
 // ~~~~ Fill Path
         // set PathPos's
 // ~~~~ Reset
-        CCL_Darr_cAdjSize(PathFromStart, 1); // Slower than Stack Acsess but less mem
-
+        CCL_Darr_cAdjSize(PathFromStart, Connected); 
         PathFromStart.Data[Connected].Length = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
         PathFromStart.Data[Connected].Direction = CCL_XOR_13L17R5L_32_t(4);
 
-        CCL_Darr_cAdjSize(PathFromEnd, 1);
-
+        CCL_Darr_cAdjSize(PathFromEnd, Connected);
         PathFromEnd.Data[Connected].Length = CCL_XOR_13L17R5L_32_t(MaxPath_Size);
         PathFromEnd.Data[Connected].Direction = CCL_XOR_13L17R5L_32_t(4);
 
-    // Check Overlap so iterate from beggining of each line to end
-        if (PathPosEnd[0] == PathPosStart[0] && PathPosStart[1] == PathPosEnd[1]) break; // If Connected
+        // What if connects with a previous path ** Will continue until front path connection. Keep that way, i like better
+        for (unsigned char i = 0; i < PathFromStart.Data[Connected].Length; i++)
+            if (PathPosEnd[0] == PathPosStart[0] && PathPosStart[1] == PathPosEnd[1]) break; // If Connected, ** Turn into chain for opt
+
         Connected++;
     }
 // ~~~~ Maze Finished Generating
