@@ -1,7 +1,7 @@
 #ifndef __LTSPRITE__
 #define __LTSPRITE__
 
-#include "Includes Code\Structs\Sprites\Z-TilitSprite.hpp"
+#include "Main\Objects\Sprites\Z-TiltSprite.hpp"
 #include "Main\Includes\Constexprs.hpp"
 #include "Main\Includes\CompileOptions.hpp"
 
@@ -63,7 +63,7 @@ inline void LTSprite_Once()
     UniqueObj_Amount = 0/*Get Num*/;// Per instance
     if (UniqueObj_Amount > ccUniqueObj_BuffSize)
         Render_LTSprite(UniqueObj_Amount, UniqueObj_Buff, ObjPos_BuffAmount,ObjPosX_Buff, ObjPosY_Buff, UniqueObj_Overflow);
-    else if
+    // else if () // **
 
 #else
     Render_LTSprite(UniqueObj_Amount, UniqueObj_Buff, ObjPos_BuffAmount,ObjPosX_Buff, ObjPosY_Buff);

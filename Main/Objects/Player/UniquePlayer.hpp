@@ -1,8 +1,8 @@
 #ifndef __IN_GAME_PLAYER__
 #define __IN_GAME_PLAYER__
 
-#include "Includes Code/Structs/Items/Item.hpp"
-#include "Includes Code/Structs/Items/Types/Ammo.hpp"
+#include "Main/Objects/Items/Item.hpp"
+#include "Main/Objects/Items/Types/Ammo.hpp"
 
 struct sInGamePlayer
 {

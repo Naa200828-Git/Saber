@@ -6,10 +6,10 @@
 // Make Sure Individual Needs are included in each file instead of Ordering The Include Statements 
 
 // ~~~~ Compiler Ifs
-#include "Main\Includes\CompileOptions.hpp"
+#include "Main/Includes/CompileOptions.hpp"
 
 // ~~~~ Constexprs
-#include "Main\Includes\Constexprs.hpp"
+#include "Main/Includes/Constexprs.hpp"
 
 // ~~~~ CCL
 #include "CCL/CCL_Darr/CCL_Darr_cAdjSize.hpp"
@@ -19,21 +19,21 @@
 #include "CCL/CCL_Rand/CCL_XOR_Rand.hpp"
 
 // ~~~~ Math Algorithms
-#include "Includes Code/Math Scripts/BulletDamage.hpp"
-#include "Includes Code/Math Scripts/PlayerOrientation.hpp"
+#include "Main/Scripts/Math Scripts/BulletDamage.hpp"
+#include "Main/Scripts/Math Scripts/PlayerOrientation.hpp"
 
 // ~~~~ Objects
-#include "Includes Code/Structs/Items/Types/Ammo.hpp"
-#include "Includes Code/Structs/Items/Types/FireArm.hpp"
-#include "Includes Code/Structs/Items/Types/HealthItem.hpp"
-#include "Includes Code/Structs/Items/Item.hpp"
-#include "Includes Code/Structs/Items/ItemOutline.hpp"
-#include "Includes Code/Structs/Player/UniquePlayer.hpp"
+#include "Main/Objects/Items/Types/Ammo.hpp"
+#include "Main/Objects/Items/Types/FireArm.hpp"
+#include "Main/Objects/Items/Types/HealthItem.hpp"
+#include "Main/Objects/Items/Item.hpp"
+#include "Main/Objects/Items/ItemOutline.hpp"
+#include "Main/Objects/Player/UniquePlayer.hpp"
 
 // ~~~~ Sprites
 
 // ~~~~ Vulkan / Rendering Scripts
-#include "Includes Code\Vulkan Scripts\ObjRendering\Z-TiltRender.hpp"
+#include "Main/Scripts/Vulkan Scripts/ObjRendering/Z-TiltRender.hpp"
 // ~~~~ Connections ** Ports, ect..
 
 #endif 
