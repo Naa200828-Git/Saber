@@ -37,9 +37,27 @@ inline void Render_LTSprite(
                 PosY = (ObjPosY_Buff[p] - CameraY_TopDown) * ((l + 1) * UniqueObj_Buff[o].Offset);
             }
 }
-inline void LTSprite_Loop()
-{
-
+inline void LTSprite_Loop(
+    unsigned char& UniqueObj_Amount, 
+    const LTSprite UniqueObj_Buff[ccUniqueObj_BuffSize], 
+    const unsigned char ObjPos_BuffAmount[ccObjPos_BuffSize], // 
+    const unsigned char ObjPosX_Buff[ccObjPos_BuffSize],      // Unsegreatated buffer
+    const unsigned char ObjPosY_Buff[ccObjPos_BuffSize]       // ^
+#if __ZTILT_OVERFLOW_HANDLING__ 
+    , LTSprite* UniqueObj_Overflow,
+    unsigned char* ObjPosX_Overflow,
+    unsigned char* ObjPosY_Overflow,
+    unsigned char* ObjPos_Amount_Overflow
+#endif
+){
+    UniqueObj_Amount = 0/*Get Num*/;// Per instance
+    Render_LTSprite(UniqueObj_Amount, UniqueObj_Buff, ObjPos_BuffAmount, ObjPosX_Buff, ObjPosY_Buff);
+#if __ZTILT_OVERFLOW_HANDLING__
+    if (UniqueObj_Amount > ccUniqueObj_BuffSize)
+        Render_LTSprite(UniqueObj_Amount, UniqueObj_Buff, ObjPos_BuffAmount,ObjPosX_Buff, ObjPosY_Buff, UniqueObj_Overflow);
+    else if (ObjPosX_Buff[0] > ccObjPos_BuffSize) // completly forget how works
+    // ...
+#endif
 }
 inline void LTSprite_Once()
 {// ~~~~ Buffers * Declaration
@@ -52,11 +70,11 @@ inline void LTSprite_Once()
 // ~~~~ Overflow * Declaration
 #if __ZTILT_OVERFLOW_HANDLING__ 
     LTSprite* UniqueObj_Overflow = new LTSprite[1];
-    unsigned char* ObjPosX_Overflow = new unsigned char[1],
+    unsigned char* ObjPosX_Overflow = new unsigned char[1], // un segreated buffer for diff structs in (->)
         * ObjPosY_Overflow = new unsigned char[1],
         * ObjPos_Amount_Overflow = new unsigned char[1];
 // **** Single Loop For Test
-// - Should not be in a loop, should dbe in itself 
+// - Should not be in a loop, should be in itself 
 
 // ~~~~ Handle Overflow
 
