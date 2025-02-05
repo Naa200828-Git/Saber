@@ -55,8 +55,8 @@ inline void LTSprite_Loop(
 #if __ZTILT_OVERFLOW_HANDLING__
     if (UniqueObj_Amount > ccUniqueObj_BuffSize)
         Render_LTSprite(UniqueObj_Amount, UniqueObj_Buff, ObjPos_BuffAmount,ObjPosX_Buff, ObjPosY_Buff, UniqueObj_Overflow);
-    else if (ObjPosX_Buff[0] > ccObjPos_BuffSize) // completly forget how works
-    // ...
+    else if (ObjPosX_Buff[0] > ccObjPos_BuffSize) // completly forget how works 
+        // ...
 #endif
 }
 inline void LTSprite_Once()

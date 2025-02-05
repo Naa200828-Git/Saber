@@ -1,11 +1,13 @@
 #ifndef __LTSPRITE_STRUCT__
 #define __LTSPRITE_STRUCT__
 
+#include "Main\Includes\CompileOptions.hpp"
+
 struct LayeredTilt_Sprite
 {   
     void** Sprites = nullptr;   
 #if __TEMP_HIGH_VIS_QUALITY__
-    void** LightMap = nullptr;   
+   void** LightMap = nullptr;   
 #endif
     unsigned char Offset,       
         LayersAmount;                 
