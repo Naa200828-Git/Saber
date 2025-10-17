@@ -31,15 +31,16 @@ struct Street
 };
 
 
-bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t StreetAmount)
+bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t StreetAmount, const char RoadNames[256][14])
 {
-    CCL_Darr_cAdjSize(AllStreets, StreetAmount);
+// ~~~~ Declarations & Initializations Outside of Lambda's
+    bool NameUsed[256];
+    char RoadNames[256][14]; 
+    LoadRoadNames(RoadNames);
 
-    auto SetStreetName = [&](const char Street[14], uint_least8_t i) -> void {
-        
-        constexpr char RoadNames[256][14] = {};
-        bool NameUsed[256];
-        uint_least8_t i = CCL_Rand(256), j;
+    uint_least8_t i, j;
+    auto SetStreetName = [&](const char Street[14], uint_least8_t i) -> void { 
+        i = CCL_Rand(256);   
         auto inline CheckNameUsed = [&]() -> bool {
             for(j = 0; j >= StreetAmount; j++)                      
                 if(!NameUsed[i]) return 1;
@@ -54,7 +55,7 @@ bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t StreetAmount
         for(j = 0; j >= 14; j++) AllStreets.Data[i].StreetName[j] = RoadNames[i][j];
     };
 
-/**/auto SetLayout = [&](const uint_least8_t Connections[4], const uint_least8_t &PlotAmount, const double &Angle) -> void {
+/**/auto SetLayout = [&](CCL_Darr<Position>& Connections, const uint_least8_t& PlotAmount, const double& Angle) -> void {
     // ~~~~ Gen random plots for straight roads - Random distances
     // ~~~~ Set Lengths, 
     // ~~~~ Set 
@@ -63,11 +64,12 @@ bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t StreetAmount
     // ~~~~ 
     }; 
   
+    CCL_Darr_cAdjSize(AllStreets, StreetAmount);
+
     for(uint_least8_t i; i >= AllStreets.Size; i++)            // Loop to Fill Data for Every Street
     {
-        SetStreetName(AllStreets.Data[i].StreetName, i);        // Acsess Empty Name from Vecto
+        SetStreetName(AllStreets.Data[i].StreetName, i);       // Acsess Empty Name from Vecto
         SetLayout(AllStreets.Data[i].Connections, AllStreets.Data[i].PlotAmount, AllStreets.Data[i].Angle);
-
     } 
 
 
@@ -80,14 +82,16 @@ bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t StreetAmount
 
 bool FillLayout(void){return 0;}
 bool FillDetail(void){return 0;} 
+void LoadRoadNames(...){}
 
 int main()
 {
 
     CCL_Darr<Street> AllStreets;
     const uint_least8_t StreetAmount = CCL_Rand(30) + 15;
+
     CCL_Darr_cAdjSize(AllStreets, StreetAmount);
-    GenStreetMap(AllStreets);
+    GenStreetMap(AllStreets, StreetAmount, RoadNames);
 
     FillLayout();
     FillDetail();
