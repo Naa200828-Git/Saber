@@ -25,6 +25,18 @@
         Arr.Data = nullptr;
         Arr.Size = 0; // ** 
     }
+        // ~~~~~ Easy Vec
+    template <typename Type> struct CCL_Darr_Ea {            // Using OOP, Heap Allocated, expandble, minimal Arr, w/ <typedef>  
+        Type * Data = nullptr;                            // Pointer to dynamically allocated memory
+        uint16_t Size = 1;
+        ~Free()
+        {
+            delete[] Arr.Data;
+            Arr.Data = nullptr;
+            Arr.Size = 0; // ** 
+        }
+    };
+
 #pragma endregion
 #pragma region Rand
 

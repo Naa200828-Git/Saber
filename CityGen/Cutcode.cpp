@@ -65,3 +65,6 @@
         if(CheckNameUsed()); STREET_NAME_FILE.read((char*)Street, 14); // read all bytes into Name
         else 
 #endif
+#if 0
+
+#endif

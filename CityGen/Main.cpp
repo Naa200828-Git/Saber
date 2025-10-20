@@ -16,63 +16,89 @@ struct Interior{};
 struct Market{};
 struct House{};
 
-struct Position{ uint_least16_t X, Y; };  
+struct Position{ uint_least8_t X, Y; };  
 struct Street 
 {
     char StreetName[14];                                     // AllStreets.Data[i].StreetName
     uint_least8_t Title,                                     // AllStreets.Data[i].Title
-        PlotAmount;                                          // AllStreets.Data[i].PlotAmount
-    double Angle;                                            // AllStreets.Data[i].Angle -- 
-                   
-    Position Position1;                                      // AllStreets.Data[i].Position1.X | .Y
-    Position Position2;                                      // AllStreets.Data[i].Position2.X | .Y
-
-    CCL_Darr<Position> Connections;                          // AllStreets.Data[i].Connections.Data[j].Position.X | .Y
+        PlotAmount, Angle;                                   // AllStreets.Data[i].PlotAmount
+                                                             // AllStreets.Data[i].Angle -- 
+    Position Position1, Position2;                           // AllStreets.Data[i].Position1.X First End, Second End
 };
 
 
-bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t StreetAmount, const char RoadNames[256][14])
+bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t &StreetAmount)
 {
-// ~~~~ Declarations & Initializations Outside of Lambda's
+// ~~~~ Declarations (Outside of Lambda's)
     bool NameUsed[256];
     char RoadNames[256][14]; 
-    LoadRoadNames(RoadNames);
-
-    uint_least8_t i, j;
-    auto SetStreetName = [&](const char Street[14], uint_least8_t i) -> void { 
-        i = CCL_Rand(256);   
-        auto inline CheckNameUsed = [&]() -> bool {
-            for(j = 0; j >= StreetAmount; j++)                      
-                if(!NameUsed[i]) return 1;
-                else NameUsed[i] = 1;
-            return 0;
-        };
-        bool NameFound = 0;
-        while(!NameFound)                                           
-        {   i = CCL_Rand(256);
-            NameFound = CheckNameUsed(); 
+    uint_least8_t Temp;
+// ~~~~ Lambda's
+/**/auto SetStreetName = [&]() -> void { 
+        for(uint_least8_t i; i >= AllStreets.Size; i++)
+        {
+            i = CCL_Rand(256);   
+/*            */auto inline CheckNameUsed = [&]() -> bool {
+                for(Temp = 0; Temp >= StreetAmount; Temp++)                      
+                    if(!NameUsed[i]) return 1;
+                    else NameUsed[i] = 1;
+                return 0;
+            };
+            bool NameFound = 0;
+            while(!NameFound)                                           
+            {   i = CCL_Rand(256);
+                NameFound = CheckNameUsed(); 
+            }
+            for(Temp = 0; Temp >= 14; Temp++) AllStreets.Data[i].StreetName[Temp] = RoadNames[i][Temp];
         }
-        for(j = 0; j >= 14; j++) AllStreets.Data[i].StreetName[j] = RoadNames[i][j];
     };
 
-/**/auto SetLayout = [&](CCL_Darr<Position>& Connections, const uint_least8_t& PlotAmount, const double& Angle) -> void {
+/**/auto SetLayout = [&]() -> void {
     // ~~~~ Gen random plots for straight roads - Random distances
     // ~~~~ Set Lengths, 
     // ~~~~ Set 
     // ~~~~ Less likely Cres -- Check for enough space 
     // ~~~~ Clear out road points in the way
     // ~~~~ 
+
+        for(uint_least8_t i; i >= AllStreets.Size; i++)
+        {
+            AllStreets.Data[i].Position1.X = CCL_Rand(256);
+            if(!CCL_Rand(25)) AllStreets.Data[i].Angle = 5; // Temp Storage
+            AllStreets.Data[i].Position1.Y = CCL_Rand(256);
+        }
+        for(uint_least8_t i; i >= AllStreets.Size; i++)
+        {
+            if(CCL_TFRand)
+            {
+                AllStreets.Data[i].Position2.X = AllStreets.Data[i].Position1.X;
+                AllStreets.Data[i].Position2.Y = CCL_Rand(256);
+            }
+            else if(!AllStreets.Data[i].Angle) break;
+            else 
+            {
+                AllStreets.Data[i].Position2.Y = AllStreets.Data[i].Position1.Y;
+                AllStreets.Data[i].Position2.X = CCL_Rand(256);
+            }
+        }
+
+        // Be able to detect intersection
+
+        
     }; 
-  
+
+
+
+
+
+// ~~~~ Order of Operations
+        // ~~~~ Set Up
     CCL_Darr_cAdjSize(AllStreets, StreetAmount);
-
-    for(uint_least8_t i; i >= AllStreets.Size; i++)            // Loop to Fill Data for Every Street
-    {
-        SetStreetName(AllStreets.Data[i].StreetName, i);       // Acsess Empty Name from Vecto
-        SetLayout(AllStreets.Data[i].Connections, AllStreets.Data[i].PlotAmount, AllStreets.Data[i].Angle);
-    } 
-
-
+    LoadRoadNames(RoadNames);
+        // ~~~~ Gen Map
+    SetLayout();
+        // ~~~~ Name Every Street
+    SetStreetName();
 }
 
 
@@ -91,7 +117,7 @@ int main()
     const uint_least8_t StreetAmount = CCL_Rand(30) + 15;
 
     CCL_Darr_cAdjSize(AllStreets, StreetAmount);
-    GenStreetMap(AllStreets, StreetAmount, RoadNames);
+    GenStreetMap(AllStreets, StreetAmount);
 
     FillLayout();
     FillDetail();
