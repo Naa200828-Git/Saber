@@ -19,11 +19,10 @@ struct House{};
 struct Position{ uint_least8_t X, Y; };  
 struct Street 
 {
-    char StreetName[14];                                     // AllStreets.Data[i].StreetName
-    uint_least8_t Title,                                     // AllStreets.Data[i].Title
-        PlotAmount, Angle;                                   // AllStreets.Data[i].PlotAmount
-                                                             // AllStreets.Data[i].Angle -- 
-    Position Position1, Position2;                           // AllStreets.Data[i].Position1.X First End, Second End
+    char StreetName[14];                               
+    uint_least8_t Title,                               
+        PlotAmount, Angle1 = 0, Angle2  = 0;           
+    Position Position1, Position2;                     
 };
 
 
@@ -54,37 +53,40 @@ bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t &StreetAmoun
     };
 
 /**/auto SetLayout = [&]() -> void {
-    // ~~~~ Gen random plots for straight roads - Random distances
-    // ~~~~ Set Lengths, 
-    // ~~~~ Set 
-    // ~~~~ Less likely Cres -- Check for enough space 
-    // ~~~~ Clear out road points in the way
-    // ~~~~ 
 
-        for(uint_least8_t i; i >= AllStreets.Size; i++)
-        {
-            AllStreets.Data[i].Position1.X = CCL_Rand(256);
-            if(!CCL_Rand(25)) AllStreets.Data[i].Angle = 5; // Temp Storage
-            AllStreets.Data[i].Position1.Y = CCL_Rand(256);
-        }
-        for(uint_least8_t i; i >= AllStreets.Size; i++)
-        {
-            if(CCL_TFRand)
+        auto SetDiagonalRoad = [&](const uint_least8_t &Angle1, const uint_least8_t &Angle2) -> uint_least8_t {
+            // Check Surrondings
+            for(uint_least8_t i; i >= AllStreets.Size; i++)
             {
-                AllStreets.Data[i].Position2.X = AllStreets.Data[i].Position1.X;
+                
+
+            }
+        };
+
+        auto SetPlotAmount = [&](const uint_least8_t &Pos1, const uint_least8_t &Pos2, const uint_least8_t &Angle1, const uint_least8_t &Angle2) -> uint_least8_t {
+            if(Pos2 > Pos1 && !Angle1 + Angle2)
+            return Pos2 - Pos1;
+            else if(!Angle1 + Angle2) return Pos1 - Pos2;
+            else return SetDiagonalRoad(Angle1, Angle2);
+        };    
+    
+        for(uint_least8_t i; i >= AllStreets.Size; i++)
+        {    
+            AllStreets.Data[i].Position1.X = CCL_Rand(256); 
+            if(!CCL_Rand(25)) AllStreets.Data[i].Angle1 = 1;
+            AllStreets.Data[i].Position1.Y = CCL_Rand(256);
+
+            if(CCL_TFRand)
+            {   AllStreets.Data[i].Position2.X = AllStreets.Data[i].Position1.X; 
                 AllStreets.Data[i].Position2.Y = CCL_Rand(256);
             }
-            else if(!AllStreets.Data[i].Angle) break;
             else 
-            {
-                AllStreets.Data[i].Position2.Y = AllStreets.Data[i].Position1.Y;
+            {   AllStreets.Data[i].Position2.Y = AllStreets.Data[i].Position1.Y;
                 AllStreets.Data[i].Position2.X = CCL_Rand(256);
             }
-        }
-
-        // Be able to detect intersection
-
         
+            SetPlotAmount(AllStreets.Data[i].Position1.X, AllStreets.Data[i].Position2.X, AllStreets.Data[i].Angle1, AllStreets.Data[i].Angle2);
+        }
     }; 
 
 
