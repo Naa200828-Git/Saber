@@ -2,15 +2,6 @@
 #include "AllDefinitions.hpp"
 #include "CCL.hpp"
 
-
-// Generate Road:
-// Name
-// **
-// **
-// **
-
-
-
 struct Person{};
 struct Interior{};
 struct Market{};
@@ -58,7 +49,7 @@ bool GenStreetMap(CCL_Darr<Street> &AllStreets, const uint_least8_t &StreetAmoun
             // Check Surrondings
             for(uint_least8_t i; i >= AllStreets.Size; i++)
             {
-                
+
 
             }
         };
